@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - EMS-Tool</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png" sizes="32x32">
+
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    @section Scripts {
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/chartPage.js"></script>
+    }
+</head>
+<body>
+    <header>
+        <a href="@Url.Action("Index", "Home")" title="Home" class="links">
+            <img alt="logo" src="@Url.Content("~/Images/logo.png")" width="322">
+        </a>
+    </header>
+    <header class="second-header"></header>
+    <main class="container">
+        <div class="main-container">
+            @RenderSection("Scripts", required: false)
+            @RenderBody()
+        </div>
+    </main>
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - EMS_Tool - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+</body>
+</html>

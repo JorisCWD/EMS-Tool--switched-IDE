@@ -1,0 +1,74 @@
+* { /* Applies to everything, right now used to eliminate padding and margin thats automaticly added to everything*/
+    padding: 0;
+    margin: 0;
+}
+
+/* Headers ----------------------------------------------------------------------------------------------------------------------*/
+.top-header {   /* The topheader is where the logo recides on the top left, top right has some user instructions */
+    Width: 100%;
+    height: 70px;
+    padding: 0;
+    border-bottom: 1px solid #C8C7CC;
+}
+.second-header {    /* The second header is used for spacing I guess, not sure */
+    background-color: #f5f5f5;
+    margin: 0px -15px 0px 225px;
+    border-radius: 0;
+    padding: 15px 45px 15px 15px;
+    border-bottom: 1px solid #C8C7CC;
+    border-left: 1px solid #C8C7CC;
+    position: relative;
+    height: 20px;
+}
+.spacing { /* spacing used to create the space above the navigation bar */
+    background-color: #f5f5f5;
+    border-top: 1px solid #C8C7CC;
+    border-bottom: 1px solid #C8C7CC;
+    height: 50px;
+}
+/* Navigation ---------------------------------------------------------------------------------------------------------------- */
+.main-navigation {  /* Navigation menu */
+    all: unset; /* Resets the annoying styling from bootstrap */
+    width: 225px;
+    height: 100vh;
+    background-color: #f5f5f5;
+    border-right: 1px solid #C8C7CC;
+}
+
+    .main-navigation ul li a, .main-navigation ul li button { /* Buttuns in the navigation menu, follow the semenmtic struture */
+        all: unset; /* Resets the annoying styling from bootstrap */
+        display: flex;
+        align-items: center;
+        justify-content: left;
+        padding-left: 15px;
+        width: 210px;
+        height: 50px;
+        color: black;
+        text-decoration: none; /* Removes the undersores from the text which are automaticly added to <li> sementics */
+        transition: background-color 0.1s ease; /* Transition when hovering over */
+        border-bottom: 1px solid #C8C7CC;
+    }
+
+        .main-navigation ul li a:hover, .main-navigation ul li button:hover { /* Change colour of the button when hovering mouse over it */
+            background-color: #e6e6e6;
+        }
+        .main-navigation ul li a.active, .main-navigation ul li button.active { /* Changing the colour of the button and text when on that page */
+            background-color: blue;
+            color: white;
+        }
+/* Main content ---------------------------------------------------------------------------------------------------------------- */
+.main-container {
+    flex-grow: 1;
+    padding: 10px;
+    margin-left: 10px;
+}
+
+.container { 
+    display: flex;
+    background-color: white;
+}
+/* Footer --------------------------------------------------------------------------------------------------------------------*/
+.bottom {
+    background-color: #f5f5f5;
+    padding-left: 10px;
+}

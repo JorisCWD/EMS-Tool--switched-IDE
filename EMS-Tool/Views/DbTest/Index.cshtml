@@ -1,0 +1,53 @@
+﻿@model List<EMS_Tool.Model.P0994106.Punten> // The link towards the model should match the namespace + the model file name.
+@{
+	ViewData["Title"] = "Index";
+}
+
+<h3>Index</h3>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Punt ID</th>
+			<th>Project</th>
+			<th>Onderstation</th>
+			<th>Volgnummer</th>
+			<th>Label</th>
+			<th>Weergave Type</th>
+			<th>Start Systeemtijd</th>
+			<th>Eind Systeemtijd</th>
+			<th>Aktief</th>
+			<th>Omschrijving</th>
+			<th>Commentaar</th>
+			<th>Periode</th>
+			<th>Interval</th>
+			<th>Volgende Ophaaltijd</th>
+			<th>Waarde Gemiste Data</th>
+			<th>Gemiste Data Aanvullen</th>
+			<th>Max Vultijd</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach(var punten in Model)
+		{
+			<tr>
+				<td>@punten.PuntId</td>
+				<td>@punten.Project</td>
+				<td>@punten.Onderstation</td>
+				<td>@punten.Volgnummer</td>
+				<td>@punten.Label</td>
+				<td>@punten.WeergaveType</td>
+				<td>@punten.StartSysteemtijd</td>
+				<td>@punten.EindSysteemtijd</td>
+				<td>@punten.Aktief</td>
+				<td>@punten.Omschrijving</td>
+				<td>@punten.Periode</td>
+				<td>@punten.Interval</td>
+				<td>@punten.VolgendeOphaaltijd</td>
+				<td>@punten.WaardeGemisteData</td>
+				<td>@punten.GemisteDataAanvullen</td>
+				<td>@punten.MaxVultijd</td>
+			</tr>
+		}
+	</tbody>
+</table>

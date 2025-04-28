@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
+
+namespace EMS_Tool.Model.P0994106;
+
+[Table("Info")]
+public partial class Info
+{
+    [Key]
+    [StringLength(30)]
+    public string Sinfonaam { get; set; } = null!;
+
+    [StringLength(2040)]
+    public string? Sinfo { get; set; }
+}

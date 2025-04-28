@@ -1,0 +1,34 @@
+﻿@model List<string>
+@{
+    ViewData["Title"] = "Dynamic Chart by Group";
+}
+
+<h2>Chart by Grouping</h2>
+
+<label>Table</label>
+<select id="tableSelector">
+    <option disabled selected>Choose Table</option>
+    @foreach (var table in Model)
+    {
+        <option value="@table">@table</option>
+    }
+</select>
+
+<label>Group By Field</label>
+<select id="groupByField"></select>
+
+<label>Value Field</label>
+<select id="valueField"></select>
+
+<label>Chart Type</label>
+<select id="chartType">
+    <option value="bar">Bar</option>
+    <option value="line">Line</option>
+</select>
+
+<canvas id="chartCanvas" width="800" height="400"></canvas>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/js/chartPage.js"></script>
+}
+
