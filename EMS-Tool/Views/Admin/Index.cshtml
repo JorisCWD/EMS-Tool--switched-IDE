@@ -1,0 +1,58 @@
+﻿@using EMS_Tool.Model
+@model List<UserRolesViewModel>
+
+@{
+    Layout = "_login";
+    ViewData["Title"] = "Admin Panel - Manage Roles & Projects";
+}
+
+<h2>Admin Panel</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>UserName</th>
+            <th>Email</th>
+            <th>Current Roles</th>
+            <th>Assign New Role</th>
+            <th>Manage Projects</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                <td>
+                    @foreach (var role in user.Roles)
+                    {
+                        <span class="badge bg-success me-1">
+                            @role
+                            <form asp-action="RemoveRole" method="post" style="display:inline">
+                                <input type="hidden" name="userId" value="@user.UserId" />
+                                <input type="hidden" name="role" value="@role" />
+                                <button type="submit" class="btn btn-sm btn-danger ms-1">x</button>
+                            </form>
+                        </span>
+                    }
+                </td>
+                <td>
+                    <form asp-action="AssignRole" method="post">
+                        <input type="hidden" name="userId" value="@user.UserId" />
+                        <select name="role" class="form-select">
+                            <option value="User">User</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-sm mt-1">Assign</button>
+                    </form>
+                </td>
+                <td>
+                    <a asp-action="UserDetails" asp-route-userId="@user.UserId" class="btn btn-sm btn-warning">
+                        Manage Projects
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

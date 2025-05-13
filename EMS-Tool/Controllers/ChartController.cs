@@ -1,14 +1,16 @@
 ﻿using EMS_Tool.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 using System.Reflection;
 
+[Authorize(Roles = "Admin")]
 public class ChartController : Controller
 {
-    private readonly TchP0994106Context _context;
+    private readonly TchW0814080Context _context;
 
-    public ChartController(TchP0994106Context context)
+    public ChartController(TchW0814080Context context)
     {
         _context = context;
     }

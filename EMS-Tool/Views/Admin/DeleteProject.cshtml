@@ -1,0 +1,16 @@
+﻿@model EMS_Tool.Areas.Identity.Data.UserProject
+
+@{
+    Layout = "_login";
+    ViewData["Title"] = "Delete Project";
+}
+
+<h1>@ViewData["Title"] - Confirm Deletion</h1>
+
+<h3>Are you sure you want to delete the project @Model.ProjectNumber?</h3>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a href="@Url.Action("UserDetails", "Admin", new { userId = Model.UserId })" class="btn btn-secondary">Cancel</a>
+</form>

@@ -1,0 +1,21 @@
+﻿@model EMS_Tool.Model.ProjectInputModel
+
+@{
+    Layout = "_login";
+    ViewData["Title"] = "Edit Project";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="UpdateProject" method="post">
+    <input type="hidden" asp-for="ProjectNumber" />
+    <div class="form-group">
+        <label>Project Number</label>
+        <input type="text" class="form-control" asp-for="ProjectNumber" />
+    </div>
+    <div class="form-group">
+        <label>Connection String</label>
+        <input type="text" class="form-control" asp-for="ConnectionString" />
+    </div>
+    <button type="submit" class="btn btn-primary">Update Project</button>
+</form>

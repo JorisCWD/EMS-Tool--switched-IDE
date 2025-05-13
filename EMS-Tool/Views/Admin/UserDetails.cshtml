@@ -1,0 +1,49 @@
+﻿@model EMS_Tool.Model.UserProjectViewModel
+
+@{
+    Layout = "_login";
+    ViewData["Title"] = "User Projects";
+}
+
+<h1>@ViewData["Title"] for @Model.Email</h1>
+
+<h2>Assigned Projects</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Project Number</th>
+            <th>Connection String</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var project in Model.AssignedProjects)
+        {
+            <tr>
+                <td>@project.ProjectNumber</td>
+                <td>@project.ConnectionString</td>
+                <td>
+                    <a href="@Url.Action("EditProject", "Admin", new { projectId = project.Id })">Edit</a> |
+                    <a href="@Url.Action("DeleteProject", "Admin", new { projectId = project.Id })">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Add New Projects</h3>
+<partial name="_ValidationScriptsPartial" />
+<div asp-validation-summary="All" class="text-danger"></div>
+<form asp-controller ="Admin" asp-action="AssignProject" method="post">
+    <input type="hidden" asp-for="UserId" />
+    <input type="hidden" asp-for="Email" />
+    <div class="form-group">
+        <label>Project Number</label>
+        <input type="text" class="form-control" asp-for="NewProjects[0].ProjectNumber" />
+    </div>
+    <div class="form-group">
+        <label>Connection String</label>
+        <input type="text" class="form-control" asp-for="NewProjects[0].ConnectionString" />
+    </div>
+    <button type="submit" class="btn btn-primary">Assign Project</button>
+</form>

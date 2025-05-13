@@ -1,8 +1,21 @@
-﻿@{
+﻿@model EMS_Tool.Model.UserProjectViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<header class="page-header"><h2>Welcome, @Model.Email</h2></header>
+
+@if (Model.AssignedProjects.Any())
+{
+    @foreach (var project in Model.AssignedProjects)
+    {
+    <div class="building-tile"><a asp-controller="Home" asp-action="Privacy">
+         <div class="building-img"> block </div>
+         <div class="project-number"> @project.ProjectNumber </div>
+    </a></div>
+    }
+}
+else
+{
+    <p>No projects assigned to you.</p>
+}
