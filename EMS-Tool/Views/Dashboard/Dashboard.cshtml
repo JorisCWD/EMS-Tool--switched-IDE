@@ -1,0 +1,59 @@
+﻿@using EMS_Tool.Model
+@model IEnumerable<Chart>
+
+@{
+    var selectedNav = ViewBag.Navbar as Navbar ?? new Navbar { Name = "Default Navbar" };
+    var navItems = ViewBag.NavbarItems as List<Navbar> ?? new List<Navbar>();
+    int selectedNavId = ViewBag.NavID ?? 0;
+}
+
+<script>
+    window.projectId = @ViewBag.ProjectID;
+</script>
+
+<nav class="dash-navigation">
+    <ul>
+        @foreach (var nav in navItems)
+        {
+            <li>
+                <a href="@Url.Action("Dashboard", new { projectName = ViewBag.ProjectName, navId = nav.ID })"
+                   class="@(nav.ID == selectedNavId ? "active" : "")">
+                    @nav.Name
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
+
+<h2>@selectedNav.Name Dashboard</h2>
+
+
+<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addNavbarModal">Add Navbar Item</button>
+<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addWidgetModal">Add Widget</button>
+
+<div id="dashboard-container" class="mt-4 position-relative" style="min-height: 500px;">
+    <div class="grid-stack" id="dashboard">
+        @foreach (var chart in Model)
+        {
+            <div class="grid-stack-item"
+                 gs-x="@chart.PositionX"
+                 gs-y="@chart.PositionY"
+                 gs-w="@Math.Max(1, chart.Width / 100)"
+                 gs-h="@Math.Max(1, chart.Height / 100)"
+                 data-id="@chart.ID">
+
+                <div class="grid-stack-item-content border">
+                    <h5>@chart.ChartTitle</h5>
+                    <canvas id="chart-@chart.ID"></canvas>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/dashboard.js"></script>
+}
+
+@await Html.PartialAsync("_AddNavbarModal")
+@await Html.PartialAsync("_AddWidgetModal")

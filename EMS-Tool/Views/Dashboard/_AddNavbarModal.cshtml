@@ -1,0 +1,16 @@
+﻿<div class="modal fade" id="addNavbarModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form asp-action="AddNavbar" asp-controller="Dashboard" method="post">
+            <div class="modal-content">
+                <div class="modal-header"><h5>Add Navbar Item</h5></div>
+                <div class="modal-body">
+                    <input type="hidden" name="projectId" value="@ViewBag.ProjectId" />
+                    <input name="name" class="form-control" placeholder="Enter name" required />
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,5 +1,6 @@
 ﻿@model EMS_Tool.Model.ProjectInputModel
 
+
 @{
     Layout = "_login";
     ViewData["Title"] = "Edit Project";
@@ -8,14 +9,21 @@
 <h1>@ViewData["Title"]</h1>
 
 <form asp-action="UpdateProject" method="post">
-    <input type="hidden" asp-for="ProjectNumber" />
+
+    <input type="hidden" name="projectId" value="@ViewBag.ProjectId" />
+
     <div class="form-group">
-        <label>Project Number</label>
-        <input type="text" class="form-control" asp-for="ProjectNumber" />
+        <label asp-for="ProjectNumber"></label>
+        <input asp-for="ProjectNumber" class="form-control" />
+        <span asp-validation-for="ProjectNumber" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <label>Connection String</label>
-        <input type="text" class="form-control" asp-for="ConnectionString" />
+        <label asp-for="ConnectionString"></label>
+        <input asp-for="ConnectionString" class="form-control" />
+        <span asp-validation-for="ConnectionString" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Update Project</button>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="UserDetails" asp-route-userId="@ViewBag.UserId" class="btn btn-secondary">Cancel</a>
 </form>

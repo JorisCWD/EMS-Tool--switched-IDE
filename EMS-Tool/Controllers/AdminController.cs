@@ -201,6 +201,8 @@ public class AdminController : Controller
             ProjectNumber = project.ProjectNumber,
             ConnectionString = project.ConnectionString
         };
+        ViewBag.ProjectId = projectId;
+        ViewBag.UserId = project.UserId;
 
         return View(model);
     }
@@ -240,15 +242,18 @@ public class AdminController : Controller
 
     // New method to confirm project deletion
     [HttpPost, ActionName("DeleteProject")]
-    public async Task<IActionResult> DeleteConfirmed(int projectId)
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var project = await _context.UserProjects.FindAsync(projectId);
-        if (project != null)
+        var project = await _context.UserProjects.FindAsync(id);
+        if (project == null)
         {
-            _context.UserProjects.Remove(project);
-            await _context.SaveChangesAsync();
+            return BadRequest();
         }
 
-        return RedirectToAction("UserDetails", new { userId = project.UserId });
+        var userId=project.UserId;
+        _context.UserProjects.Remove(project);
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction("UserDetails", new { userId });
     }
 }

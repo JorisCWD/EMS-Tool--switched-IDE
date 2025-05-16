@@ -1,0 +1,20 @@
+﻿@model List<string>
+
+<h2>Debug Info</h2>
+<p>Model count: @Model?.Count</p>
+
+@if (Model.Count == 0)
+{
+    <p>No tables found.</p>
+}
+else
+{
+    <ul>
+        @foreach (var table in Model)
+        {
+            <li>@table</li>
+        }
+    </ul>
+}
+
+

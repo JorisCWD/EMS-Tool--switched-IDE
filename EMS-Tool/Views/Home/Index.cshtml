@@ -1,18 +1,19 @@
 ﻿@model EMS_Tool.Model.UserProjectViewModel
-@{
-    ViewData["Title"] = "Home Page";
-}
 
-<header class="page-header"><h2>Welcome, @Model.Email</h2></header>
+<header class="page-header">
+    <h2>Welcome, @Model.Email</h2>
+</header>
 
 @if (Model.AssignedProjects.Any())
 {
     @foreach (var project in Model.AssignedProjects)
     {
-    <div class="building-tile"><a asp-controller="Home" asp-action="Privacy">
-         <div class="building-img"> block </div>
-         <div class="project-number"> @project.ProjectNumber </div>
-    </a></div>
+        <div class="building-tile">
+            <a href="@Url.Action("Dashboard", "Dashboard", new { projectId = project.Id, navId = 1})">
+                <div class="building-img">block</div>
+                <div class="project-number">@project.ProjectNumber</div>
+            </a>
+        </div>
     }
 }
 else

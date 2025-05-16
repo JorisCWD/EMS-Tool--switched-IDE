@@ -12,6 +12,12 @@
         <li>
             <a asp-controller="Home" asp-action="Privacy" class="@(IsActive("Home", "Privacy"))">Privacy</a>
         </li>
+        @if (User.IsInRole("Admin"))
+        {
+            <li>
+                <a asp-controller="Admin" asp-action="Index" class="@(IsActive("Admin", "Index"))">Admin</a>
+            </li>
+        }
         <partial name="_LoginPartial" />
     </ul>
 </div>

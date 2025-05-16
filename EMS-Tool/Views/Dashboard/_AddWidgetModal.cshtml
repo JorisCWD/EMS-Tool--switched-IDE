@@ -1,0 +1,22 @@
+﻿<div class="modal fade" id="addWidgetModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form asp-action="AddChart" asp-controller="Dashboard" method="post">
+            <input type="hidden" name="NavID" value="@ViewBag.Navbar.ID" />
+            <div class="modal-content">
+                <div class="modal-header"><h5>Add Widget</h5></div>
+                <div class="modal-body">
+                    <input name="ChartTitle" class="form-control mb-2" placeholder="Chart Title" required />
+                    <textarea name="DataQuery" class="form-control mb-2" placeholder="SQL Query" required></textarea>
+                    <select name="ChartType" class="form-control">
+                        <option value="Bar">Bar</option>
+                        <option value="Line">Line</option>
+                        <option value="Pie">Pie</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

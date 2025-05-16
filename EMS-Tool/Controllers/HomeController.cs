@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EMS_Tool.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin, User")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

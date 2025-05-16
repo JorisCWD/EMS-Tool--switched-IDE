@@ -5,12 +5,15 @@ using Microsoft.AspNetCore.Identity;
 using System.Configuration;
 using Humanizer.Configuration;
 using EMS_Tool.Areas.Identity.Data;
+using EMS_Tool.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<DashboardDataService>();
+
 
 builder.Services.AddDbContext<TchP0994106Context>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("KoopgootConnectionString")));
@@ -28,6 +31,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 var app = builder.Build();
+app.UseDeveloperExceptionPage();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -36,7 +40,6 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
 app.UseHttpsRedirection();
 app.UseRouting();
 

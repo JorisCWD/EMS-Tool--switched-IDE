@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 using System.Reflection;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin, User")]
 public class ChartController : Controller
 {
     private readonly TchW0814080Context _context;
