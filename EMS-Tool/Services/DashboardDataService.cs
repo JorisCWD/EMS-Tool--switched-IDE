@@ -27,6 +27,26 @@ namespace EMS_Tool.Services
             }
             return tables;
         }
+        public async Task<List<string>> GetColumnsAsync(string connectionString, string tableName)
+        {
+            var columns = new List<string>();
+            var query = @"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = @TableName";
+
+            using var connection = new SqlConnection(connectionString);
+            await connection.OpenAsync();
+
+            using var command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@TableName", tableName);
+            using var reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                columns.Add(reader.GetString(0));
+            }
+
+            return columns;
+        }
+
 
         public async Task<List<Navbar>> GetNavbarItemsAsync(string connectionString)
         {
@@ -187,6 +207,18 @@ namespace EMS_Tool.Services
             }
 
             return null;
+        }
+        public async Task DeleteChartAsync(string connectionString, int chartId)
+        {
+            const string query = "DELETE FROM Chart WHERE ID = @ChartId";
+
+            using var connection = new SqlConnection(connectionString);
+            await connection.OpenAsync();
+
+            using var command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@ChartId", chartId);
+
+            await command.ExecuteNonQueryAsync();
         }
 
     }

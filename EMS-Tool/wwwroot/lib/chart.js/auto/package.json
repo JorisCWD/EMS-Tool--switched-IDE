@@ -10,5 +10,8 @@
         "import": "./auto.js",
         "require": "./auto.cjs"
     },
-    "types": "./auto.d.ts"
+    "types": "./auto.d.ts",
+    "devDependencies": {
+        "eslint": "^9.27.0"
+    }
 }

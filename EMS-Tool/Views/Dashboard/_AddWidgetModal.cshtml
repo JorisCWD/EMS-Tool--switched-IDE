@@ -2,16 +2,36 @@
     <div class="modal-dialog">
         <form asp-action="AddChart" asp-controller="Dashboard" method="post">
             <input type="hidden" name="NavID" value="@ViewBag.Navbar.ID" />
+            <input type="hidden" name="projectId" value="@ViewBag.ProjectId"/>
             <div class="modal-content">
                 <div class="modal-header"><h5>Add Widget</h5></div>
                 <div class="modal-body">
                     <input name="ChartTitle" class="form-control mb-2" placeholder="Chart Title" required />
-                    <textarea name="DataQuery" class="form-control mb-2" placeholder="SQL Query" required></textarea>
+
+                    <!-- Table dropdown -->
+                    <select id="tableSelect" class="form-control mb-2">
+                        <option value="">Select Table</option>
+                        @foreach (var table in (List<string>)ViewBag.Tables)
+                        {
+                            <option value="@table">@table</option>
+                        }
+                    </select>
+
+                    <!-- Column dropdowns for x/y axis -->
+                    <select id="xColumnSelect" name="XColumn" class="form-control mb-2">
+                        <option value="">Select X Column</option>
+                    </select>
+                    <select id="yColumnSelect" name="YColumn" class="form-control mb-2">
+                        <option value="">Select Y Column</option>
+                    </select>
+
                     <select name="ChartType" class="form-control">
                         <option value="Bar">Bar</option>
                         <option value="Line">Line</option>
                         <option value="Pie">Pie</option>
                     </select>
+
+                    <input type="hidden" name="DataQuery" id="dataQueryInput" />
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Add</button>
@@ -20,3 +40,4 @@
         </form>
     </div>
 </div>
+

@@ -3,13 +3,13 @@
     margin: 0;
 }
 /* Headers ----------------------------------------------------------------------------------------------------------------------*/
-.top-header {   /* The topheader is where the logo recides on the top left, top right has some user instructions */
+.top-header { /* The topheader is where the logo recides on the top left, top right has some user instructions */
     Width: 100vw;
     height: 70px;
     padding: 0;
     border-bottom: 1px solid #C8C7CC;
 }
-.second-header {    /* The second header is used for spacing I guess, not sure */
+.second-header { /* The second header is used for spacing*/
     background-color: #f5f5f5;
     margin: 0px -15px 0px 225px;
     border-radius: 0;
@@ -19,7 +19,8 @@
     position: relative;
     height: 20px;
 }
-.page-header {  /* Page header within the main content box */
+.custom-page-header { /* Page header within the main content box */
+    all: unset; /* Resets the annoying styling from bootstrap */
     height: 43px;
     padding: 0px 0px 9px 0px;
     margin: 20px 0px 20px 0px;
@@ -30,37 +31,48 @@
     border-top: 1px solid #C8C7CC;
     border-bottom: 1px solid #C8C7CC;
     height: 50px;
+    width: 225px;
 }
 /* Navigation ---------------------------------------------------------------------------------------------------------------- */
-.main-navigation {  /* Navigation menu */
+.custom-navigation { /* Navigation menu */
     all: unset; /* Resets the annoying styling from bootstrap */
     width: 225px;
     height: 100vh;
     background-color: #f5f5f5;
     border-right: 1px solid #C8C7CC;
 }
-    .main-navigation ul li a, .main-navigation ul li button { /* Buttuns in the navigation menu, follow the semenmtic struture */
-        all: unset; /* Resets the annoying styling from bootstrap */
-        display: flex;
-        align-items: center;
-        justify-content: left;
-        padding-left: 15px;
-        width: 210px;
-        height: 39px;
-        color: black;
-        text-decoration: none; /* Removes the undersores from the text which are automaticly added to <li> sementics */
-        transition: background-color 0.1s ease; /* Transition when hovering over */
-        border-bottom: 1px solid #C8C7CC;
+    .custom-navigation ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
     }
-        .main-navigation ul li a:hover, .main-navigation ul li button:hover { /* Change colour of the button when hovering mouse over it */
+    .custom-navigation ul li {
+        margin: 0;
+        padding: 0;
+    }
+        .custom-navigation ul li a, .custom-navigation ul li button { /* Buttuns in the navigation menu, follow the semenmtic struture */
+            all: unset; /* Resets the annoying styling from bootstrap */
+            display: flex;
+            align-items: center;
+            justify-content: left;
+            padding-left: 15px;
+            width: 210px;
+            height: 39px;
+            color: black;
+            text-decoration: none; /* Removes the undersores from the text which are automaticly added to <li> sementics */
+            transition: background-color 0.1s ease; /* Transition when hovering over */
+            border-bottom: 1px solid #C8C7CC;
+            cursor: pointer;
+        }
+        .custom-navigation ul li a:hover, .custom-navigation ul li button:hover { /* Change colour of the button when hovering mouse over it */
             background-color: #e6e6e6;
         }
-        .main-navigation ul li a.active, .main-navigation ul li button.active { /* Changing the colour of the button and text when on that page */
+        .custom-navigation ul li a.active, .custom-navigation ul li button.active { /* Changing the colour of the button and text when on that page */
             background-color: blue;
             color: white;
         }
 .dash-navigation {
-    all: unset;
+    all: unset; /* Resets the annoying styling from bootstrap */
     display: block;
     width: 100%;
     height: 49px;
@@ -117,7 +129,7 @@
     padding: 10px;
     margin-left: 10px;
 }
-.container { 
+.custom-container {
     display: flex;
     background-color: white;
 }

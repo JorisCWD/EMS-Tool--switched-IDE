@@ -44,6 +44,7 @@ namespace EMS_Tool.Controllers
 
             var connectionString = userProject.ConnectionString;
             var navbarItems = await _dashboardService.GetNavbarItemsAsync(connectionString);
+            var tables = await _dashboardService.GetTablesAsync(connectionString);
 
             var navbar = navbarItems.FirstOrDefault(n => n.ID == navId) ?? new Navbar
             {
@@ -68,6 +69,7 @@ namespace EMS_Tool.Controllers
                     }
                 };
             }
+            ViewBag.Tables = tables;
             ViewBag.NavbarItems = navbarItems;
             ViewBag.Navbar = navbar;
             ViewBag.NavID = navId;
@@ -75,6 +77,19 @@ namespace EMS_Tool.Controllers
 
             return View(charts);
         }
+        [HttpGet("/api/dashboard/columns")]
+        public async Task<IActionResult> GetTableColumns(int projectId, string tableName)
+        {
+            var userProject = await _context.UserProjects.FirstOrDefaultAsync(p => p.Id == projectId);
+            if (userProject == null)
+                return NotFound();
+
+            var connectionString = userProject.ConnectionString;
+            var columns = await _dashboardService.GetColumnsAsync(connectionString, tableName);
+
+            return Json(columns);
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> AddNavbar(int projectId, string name)
@@ -128,6 +143,37 @@ namespace EMS_Tool.Controllers
             public int Y { get; set; }
             public int Width { get; set; }
             public int Height { get; set; }
+        }
+
+        [HttpGet("/api/dashboard/chart-data")]
+        public async Task<IActionResult> GetChartData(int projectId, int chartId)
+        {
+            var userProject = await _context.UserProjects.FirstOrDefaultAsync(p => p.Id == projectId);
+            if (userProject == null)
+                return NotFound("Project not found.");
+
+            var connectionString = userProject.ConnectionString;
+
+            var chart = await _dashboardService.GetChartByIdAsync(connectionString, chartId);
+            if (chart == null)
+                return NotFound("Chart not found.");
+
+            var data = await _dashboardService.GetChartDataAsync(connectionString, chart.DataQuery);
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteChart(int projectId, int chartId)
+        {
+            var userProject = await _context.UserProjects.FirstOrDefaultAsync(p => p.Id == projectId);
+            if (userProject == null)
+                return NotFound("Project not found.");
+
+            var connectionString = userProject.ConnectionString;
+            await _dashboardService.DeleteChartAsync(connectionString, chartId);
+
+            return Ok();
         }
     }
 }

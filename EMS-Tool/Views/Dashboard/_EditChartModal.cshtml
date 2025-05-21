@@ -1,0 +1,50 @@
+﻿<div class="modal fade" id="editChartModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editChartForm">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Chart</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editChartId" />
+                    <input type="hidden" id="editProjectId" value="@Model.ProjectID" />
+
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" id="editChartTitle" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Query</label>
+                        <textarea id="editDataQuery" class="form-control"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Chart Type</label>
+                        <select id="editChartType" class="form-control">
+                            <option value="bar">Bar</option>
+                            <option value="line">Line</option>
+                            <option value="pie">Pie</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>X-Axis Min</label>
+                        <input type="number" id="editXAxisMin" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>X-Axis Max</label>
+                        <input type="number" id="editXAxisMax" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

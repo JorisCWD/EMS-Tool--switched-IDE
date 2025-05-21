@@ -3,8 +3,12 @@
   "defaultProvider": "jsdelivr",
   "libraries": [
     {
-      "library": "chart.js@4.4.9",
-      "destination": "wwwroot/lib/chart.js/"
+        "library": "chart.js@4.4.9",
+        "destination": "wwwroot/lib/chart.js/"
+    }
+    {
+        "library": "gridstack@8.0.0",
+        "destination": "wwwroot/lib/gridstack/"
     }
   ]
 }
