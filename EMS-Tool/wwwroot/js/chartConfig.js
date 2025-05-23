@@ -2,16 +2,16 @@
 Chart.defaults.font.size = 10;
 Chart.defaults.color = '#333';
 
-Chart.defaults.plugins.legend.position = 'left';
+Chart.defaults.plugins.legend.position = 'bottom';
 Chart.defaults.plugins.tooltip.backgroundColor = '#007bff';
 
 Chart.defaults.elements.line.borderWidth = 2;
-Chart.defaults.elements.point.radius = 2;
+Chart.defaults.elements.point.radius = 0;
 
 const defaultColors = [
     'rgba(153, 102, 255, 0.7)', // Purple
     'rgba(153, 102, 255, 0.7)', // Purple
-    'rgba(54, 162, 235, 0.7)', // Blue
+    'rgba(153, 102, 255, 0.7)', // Purple
     'rgba(255, 99, 132, 0.7)', // Red
     'rgba(255, 206, 86, 0.7)', // Yellow
     'rgba(75, 192, 192, 0.7)', // Teal

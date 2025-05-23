@@ -1,10 +1,7 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
+﻿#nullable disable
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -26,36 +23,18 @@ namespace EMS_Tool.Areas.Identity.Pages.Account.Manage
             _signInManager = signInManager;
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public string Username { get; set; }
-
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
+            [Required]
+            [Display(Name = "Username")]
+            public string Username { get; set; }
+
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
@@ -66,10 +45,9 @@ namespace EMS_Tool.Areas.Identity.Pages.Account.Manage
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
-            Username = userName;
-
             Input = new InputModel
             {
+                Username = userName,
                 PhoneNumber = phoneNumber
             };
         }
@@ -100,6 +78,34 @@ namespace EMS_Tool.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
+            // Update Username
+            var currentUsername = await _userManager.GetUserNameAsync(user);
+            if (Input.Username != currentUsername)
+            {
+                var existingUser = await _userManager.FindByNameAsync(Input.Username);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("Input.Username", "This username is already taken.");
+                    await LoadAsync(user);
+                    return Page();
+                }
+
+                user.UserName = Input.Username;
+                user.NormalizedUserName = _userManager.NormalizeName(Input.Username);
+
+                var usernameUpdateResult = await _userManager.UpdateAsync(user);
+                if (!usernameUpdateResult.Succeeded)
+                {
+                    foreach (var error in usernameUpdateResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    await LoadAsync(user);
+                    return Page();
+                }
+            }
+
+            // Update Phone Number
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
             {

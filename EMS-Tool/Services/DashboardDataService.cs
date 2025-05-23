@@ -220,6 +220,36 @@ namespace EMS_Tool.Services
 
             await command.ExecuteNonQueryAsync();
         }
+        public async Task UpdateChartAsync(string connectionString, Chart updatedChart)
+        {
+            var query = @"
+        UPDATE Chart
+        SET 
+            ChartTitle = @ChartTitle,
+            ChartType = @ChartType,
+            DataQuery = @DataQuery,
+            PositionX = @PositionX,
+            PositionY = @PositionY,
+            Width = @Width,
+            Height = @Height
+        WHERE ID = @ChartId";
+
+            using var connection = new SqlConnection(connectionString);
+            await connection.OpenAsync();
+
+            using var command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@ChartId", updatedChart.ID);
+            command.Parameters.AddWithValue("@ChartTitle", updatedChart.ChartTitle);
+            command.Parameters.AddWithValue("@ChartType", updatedChart.ChartType);
+            command.Parameters.AddWithValue("@DataQuery", updatedChart.DataQuery);
+            command.Parameters.AddWithValue("@PositionX", updatedChart.PositionX);
+            command.Parameters.AddWithValue("@PositionY", updatedChart.PositionY);
+            command.Parameters.AddWithValue("@Width", updatedChart.Width);
+            command.Parameters.AddWithValue("@Height", updatedChart.Height);
+
+            await command.ExecuteNonQueryAsync();
+        }
+
 
     }
 }

@@ -28,6 +28,17 @@
     // --- Render charts with real data ---
     const canvasElements = document.querySelectorAll("canvas[id^='chart-']");
 
+    // --- Helper functions ---
+    function isValidDate(d) {
+        return d instanceof Date && !isNaN(d);
+    }
+
+    function isLikelyDate(val) {
+        if (typeof val !== 'string' && typeof val !== 'number') return false;
+        const parsed = new Date(val);
+        return isValidDate(parsed) && /\d{4}-\d{1,2}-\d{1,2}/.test(parsed.toISOString());
+    }
+
     canvasElements.forEach(canvas => {
         const chartId = canvas.id.replace("chart-", "");
         const type = canvas.dataset.type || "bar";
@@ -46,8 +57,11 @@
                     throw new Error("Expected at least 2 columns (X and Y).");
                 }
 
-                const labels = data.map(row => row[xKeys[0]]);
-                const values = data.map(row => row[xKeys[1]]);
+                const xValues = data.map(row => row[xKeys[0]]);
+                const yValues = data.map(row => row[xKeys[1]]);
+
+                const labels = xValues.map(val => isLikelyDate(val) ? new Date(val).toISOString().split('T')[0] : val);
+                const values = yValues.map(val => isNaN(val) ? val : Number(val));
 
                 const chartData = {
                     labels: labels,
@@ -69,6 +83,16 @@
                                 display: true,
                                 text: label
                             }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    maxRotation: 45,
+                                    minRotation: 30,
+                                    autoSkip: true,
+                                    maxTicksLimit: 10
+                                }
+                            }
                         }
                     }
                 };
@@ -80,7 +104,6 @@
                 ctx.fillText("Error loading data", 10, 50);
             });
     });
-
 
     // --- Populate column selects based on selected table ---
     const tableSelect = document.getElementById('tableSelect');
@@ -122,14 +145,47 @@
         }
     });
 
-    document.querySelectorAll(".delete-chart").forEach(btn => {
-        btn.addEventListener("click", function () {
-            const chartId = this.getAttribute("data-id");
-            if (confirm("Are you sure you want to delete this chart?")) {
-                fetch(`/Dashboard/DeleteChart?projectId=${window.projectId}&chartId=${chartId}`, {
-                    method: "POST"
-                }).then(() => location.reload());
+    document.querySelectorAll('.delete-chart').forEach(button => {
+        button.addEventListener('click', async () => {
+            const chartId = button.dataset.id;
+            if (!confirm('Are you sure you want to delete this chart?')) return;
+
+            const res = await fetch(`/Dashboard/DeleteChart?projectId=${window.projectId}&chartId=${chartId}`, { method: 'POST' });
+            if (res.ok) location.reload();
+            else alert('Failed to delete chart');
+        });
+    });
+
+    document.querySelectorAll('.export-chart').forEach(button => {
+        button.addEventListener('click', async () => {
+            const chartId = button.dataset.id;
+
+            const response = await fetch(`/api/chartdata/${window.projectId}/${chartId}`);
+            const result = await response.json();
+
+            if (!result || !result.data || result.data.length === 0) {
+                alert('No data available to export.');
+                return;
             }
+
+            const rows = result.data;
+            const headers = Object.keys(rows[0]);
+
+            const csv = [
+                headers.join(','),
+                ...rows.map(row => headers.map(h => `"${(row[h] ?? '').toString().replace(/"/g, '""')}"`).join(','))
+            ].join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `chart-${chartId}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
         });
     });
 });

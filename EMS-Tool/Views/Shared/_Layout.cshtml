@@ -24,7 +24,9 @@
             <img alt="logo" src="@Url.Content("~/Images/logo.png")" width="322">
         </a>
     </header>
-    <header class="spacing"></header><header class="second-header"></header>
+    <div class="header-wrapper d-flex">
+        <header class="spacing"></header><header class="second-header flex-grow-1"></header>
+    </div>
     <main class="custom-container">
         @await Html.PartialAsync("_NavigationBar") <!-- Render the navigation bar -->
            

@@ -1,50 +1,44 @@
 ﻿<div class="modal fade" id="editChartModal" tabindex="-1">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <form id="editChartForm">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Chart</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
-                </div>
+        <form id="editChartForm" asp-action="EditChart" asp-controller="Dashboard" method="post">
+            <input type="hidden" name="ID" id="editChartId" />
+            <input type="hidden" name="NavID" value="@ViewBag.Navbar.ID" />
+            <input type="hidden" name="projectId" value="@ViewBag.ProjectId" />
+
+            <div class="modal-content">
+                <div class="modal-header"><h5>Edit Chart</h5></div>
                 <div class="modal-body">
-                    <input type="hidden" id="editChartId" />
-                    <input type="hidden" id="editProjectId" value="@Model.ProjectID" />
+                    <input name="ChartTitle" id="editChartTitle" class="form-control mb-2" placeholder="Chart Title" required />
 
-                    <div class="form-group">
-                        <label>Title</label>
-                        <input type="text" id="editChartTitle" class="form-control" />
-                    </div>
+                    <select id="editTableSelect" class="form-control mb-2">
+                        <option value="">Select Table</option>
+                        @foreach (var table in (List<string>)ViewBag.Tables)
+                        {
+                            <option value="@table">@table</option>
+                        }
+                    </select>
 
-                    <div class="form-group">
-                        <label>Query</label>
-                        <textarea id="editDataQuery" class="form-control"></textarea>
-                    </div>
+                    <select id="editXColumnSelect" name="XColumn" class="form-control mb-2">
+                        <option value="">Select X Column</option>
+                    </select>
 
-                    <div class="form-group">
-                        <label>Chart Type</label>
-                        <select id="editChartType" class="form-control">
-                            <option value="bar">Bar</option>
-                            <option value="line">Line</option>
-                            <option value="pie">Pie</option>
-                        </select>
-                    </div>
+                    <select id="editYColumnSelect" name="YColumn" class="form-control mb-2">
+                        <option value="">Select Y Column</option>
+                    </select>
 
-                    <div class="form-group">
-                        <label>X-Axis Min</label>
-                        <input type="number" id="editXAxisMin" class="form-control" />
-                    </div>
+                    <select name="ChartType" id="editChartType" class="form-control">
+                        <option value="Bar">Bar</option>
+                        <option value="Line">Line</option>
+                        <option value="Pie">Pie</option>
+                    </select>
 
-                    <div class="form-group">
-                        <label>X-Axis Max</label>
-                        <input type="number" id="editXAxisMax" class="form-control" />
-                    </div>
+                    <input type="hidden" name="DataQuery" id="editDataQueryInput" />
                 </div>
-
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Save Changes</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
+

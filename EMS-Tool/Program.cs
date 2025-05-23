@@ -14,14 +14,6 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<DashboardDataService>();
 
-
-builder.Services.AddDbContext<TchP0994106Context>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("KoopgootConnectionString")));
-builder.Services.AddDbContext<TchMarcon16Context>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MarconConnectionString")));
-builder.Services.AddDbContext<TchW0814080Context>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MuseumMoreConnectionString")));
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("UserContextConnection")));
 
@@ -29,6 +21,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.Configure<IdentityOptions>(options =>
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ "
+);
+
 
 var app = builder.Build();
 app.UseDeveloperExceptionPage();

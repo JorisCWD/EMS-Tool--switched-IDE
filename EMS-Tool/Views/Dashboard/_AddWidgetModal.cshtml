@@ -2,7 +2,7 @@
     <div class="modal-dialog">
         <form asp-action="AddChart" asp-controller="Dashboard" method="post">
             <input type="hidden" name="NavID" value="@ViewBag.Navbar.ID" />
-            <input type="hidden" name="projectId" value="@ViewBag.ProjectId"/>
+            <input type="hidden" name="projectId" value="@ViewBag.ProjectId" />
             <div class="modal-content">
                 <div class="modal-header"><h5>Add Widget</h5></div>
                 <div class="modal-body">
@@ -40,4 +40,3 @@
         </form>
     </div>
 </div>
-

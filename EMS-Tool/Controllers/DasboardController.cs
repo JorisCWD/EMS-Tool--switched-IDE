@@ -5,6 +5,7 @@ using EMS_Tool.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace EMS_Tool.Controllers
 {
@@ -18,6 +19,52 @@ namespace EMS_Tool.Controllers
         {
             _dashboardService = dashboardService;
             _context = context;
+        }
+
+        // Helper method to parse SQL queries to get table name, X column, Y column
+        private (string TableName, string XColumn, string YColumn) ParseSqlQuery(string sql)
+        {
+            if (string.IsNullOrWhiteSpace(sql))
+                return (null, null, null);
+
+            string tableName = null;
+            string xColumn = null;
+            string yColumn = null;
+
+            try
+            {
+                // Match FROM <tableName>
+                var fromMatch = Regex.Match(sql, @"FROM\s+([^\s;]+)", RegexOptions.IgnoreCase);
+                if (fromMatch.Success)
+                    tableName = fromMatch.Groups[1].Value;
+
+                // Match columns between SELECT and FROM
+                var selectMatch = Regex.Match(sql, @"SELECT\s+(.*?)\s+FROM", RegexOptions.IgnoreCase);
+                if (selectMatch.Success)
+                {
+                    var columnsPart = selectMatch.Groups[1].Value;
+                    var columns = columnsPart.Split(',')
+                                             .Select(c => c.Trim())
+                                             .ToArray();
+
+                    if (columns.Length >= 2)
+                    {
+                        xColumn = columns[0];
+                        yColumn = columns[1];
+                    }
+                    else if (columns.Length == 1)
+                    {
+                        xColumn = columns[0];
+                        yColumn = null;
+                    }
+                }
+            }
+            catch
+            {
+                // ignore parse errors
+            }
+
+            return (tableName, xColumn, yColumn);
         }
 
         // GET: /Dashboard/Details/{projectId}
@@ -43,6 +90,7 @@ namespace EMS_Tool.Controllers
                 return NotFound("Project not found.");
 
             var connectionString = userProject.ConnectionString;
+
             var navbarItems = await _dashboardService.GetNavbarItemsAsync(connectionString);
             var tables = await _dashboardService.GetTablesAsync(connectionString);
 
@@ -69,14 +117,33 @@ namespace EMS_Tool.Controllers
                     }
                 };
             }
+
+            // Parse SQL query for each chart to extract tableName, X and Y columns
+            var tableNames = new Dictionary<int, string>();
+            var xColumns = new Dictionary<int, string>();
+            var yColumns = new Dictionary<int, string>();
+
+            foreach (var chart in charts)
+            {
+                var (tableName, xCol, yCol) = ParseSqlQuery(chart.DataQuery);
+                tableNames[chart.ID] = tableName ?? "";
+                xColumns[chart.ID] = xCol ?? "";
+                yColumns[chart.ID] = yCol ?? "";
+            }
+
             ViewBag.Tables = tables;
             ViewBag.NavbarItems = navbarItems;
             ViewBag.Navbar = navbar;
             ViewBag.NavID = navId;
             ViewBag.ProjectId = projectId;
 
+            ViewBag.TableNames = tableNames;
+            ViewBag.XColumns = xColumns;
+            ViewBag.YColumns = yColumns;
+
             return View(charts);
         }
+
         [HttpGet("/api/dashboard/columns")]
         public async Task<IActionResult> GetTableColumns(int projectId, string tableName)
         {
@@ -89,7 +156,6 @@ namespace EMS_Tool.Controllers
 
             return Json(columns);
         }
-
 
         [HttpPost]
         public async Task<IActionResult> AddNavbar(int projectId, string name)
@@ -174,6 +240,51 @@ namespace EMS_Tool.Controllers
             await _dashboardService.DeleteChartAsync(connectionString, chartId);
 
             return Ok();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditChart(int projectId, int chartId)
+        {
+            var userProject = await _context.UserProjects.FirstOrDefaultAsync(p => p.Id == projectId);
+            if (userProject == null)
+                return NotFound("Project not found.");
+
+            var connectionString = userProject.ConnectionString;
+            var chart = await _dashboardService.GetChartByIdAsync(connectionString, chartId);
+
+            if (chart == null)
+                return NotFound("Chart not found.");
+
+            var tables = await _dashboardService.GetTablesAsync(connectionString);
+            var (tableName, xCol, yCol) = ParseSqlQuery(chart.DataQuery);
+            var columns = !string.IsNullOrEmpty(tableName) ? await _dashboardService.GetColumnsAsync(connectionString, tableName) : new List<string>();
+
+            var navbarItems = await _dashboardService.GetNavbarItemsAsync(connectionString);
+            var navbar = navbarItems.FirstOrDefault(n => n.ID == chart.NavID) ?? new Navbar { Name = "Default", Sequence = 1 };
+
+            ViewBag.Tables = tables;
+            ViewBag.Columns = columns;
+            ViewBag.NavbarItems = navbarItems;
+            ViewBag.Navbar = navbar;
+            ViewBag.TableName = tableName;
+            ViewBag.XColumn = xCol;
+            ViewBag.YColumn = yCol;
+            ViewBag.ProjectId = projectId;
+
+            return View(chart);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditChart(int projectId, Chart chart)
+        {
+            var userProject = await _context.UserProjects.FirstOrDefaultAsync(p => p.Id == projectId);
+            if (userProject == null)
+                return NotFound("Project not found.");
+
+            var connectionString = userProject.ConnectionString;
+            await _dashboardService.UpdateChartAsync(connectionString, chart);
+
+            return RedirectToAction("Dashboard", new { projectId, navId = chart.NavID });
         }
     }
 }
