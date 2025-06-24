@@ -10,8 +10,5 @@
         "import": "./helpers.js",
         "require": "./helpers.cjs"
     },
-    "types": "./helpers.d.ts",
-    "devDependencies": {
-        "eslint": "^9.27.0"
-    }
+    "types": "./helpers.d.ts"
 }

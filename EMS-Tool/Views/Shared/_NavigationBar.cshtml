@@ -6,18 +6,15 @@
         <li>
             <a asp-controller="Home" asp-action="Index" class="@(IsActive("Home", "Index"))">Home</a>
         </li>
-        <li>
-            <a asp-controller="Chart" asp-action="Index" class="@(IsActive("Chart", "Index"))">Chart</a>
-        </li>
-        <li>
-            <a asp-controller="Home" asp-action="Privacy" class="@(IsActive("Home", "Privacy"))">Privacy</a>
-        </li>
         @if (User.IsInRole("Admin"))
         {
             <li>
                 <a asp-controller="Admin" asp-action="Index" class="@(IsActive("Admin", "Index"))">Admin</a>
             </li>
         }
+        <li>
+            <a href="https://github.com/JorisCWD/EMS-Tool--switched-IDE">Versie</a>
+        </li>
         <partial name="_LoginPartial" />
     </ul>
 </div>

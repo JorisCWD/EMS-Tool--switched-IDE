@@ -1,4 +1,5 @@
 ﻿using EMS_Tool.Model;
+using Microsoft.CodeAnalysis.Scripting.Hosting;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
@@ -27,6 +28,7 @@ namespace EMS_Tool.Services
             }
             return tables;
         }
+
         public async Task<List<string>> GetColumnsAsync(string connectionString, string tableName)
         {
             var columns = new List<string>();
@@ -46,7 +48,6 @@ namespace EMS_Tool.Services
 
             return columns;
         }
-
 
         public async Task<List<Navbar>> GetNavbarItemsAsync(string connectionString)
         {
@@ -179,6 +180,7 @@ namespace EMS_Tool.Services
 
             return result;
         }
+
         public async Task<Chart?> GetChartByIdAsync(string connectionString, int chartId)
         {
             const string query = "SELECT * FROM Chart WHERE ID = @ChartId";
@@ -208,6 +210,7 @@ namespace EMS_Tool.Services
 
             return null;
         }
+
         public async Task DeleteChartAsync(string connectionString, int chartId)
         {
             const string query = "DELETE FROM Chart WHERE ID = @ChartId";
@@ -220,6 +223,7 @@ namespace EMS_Tool.Services
 
             await command.ExecuteNonQueryAsync();
         }
+
         public async Task UpdateChartAsync(string connectionString, Chart updatedChart)
         {
             var query = @"
@@ -249,7 +253,5 @@ namespace EMS_Tool.Services
 
             await command.ExecuteNonQueryAsync();
         }
-
-
     }
 }

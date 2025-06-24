@@ -1,9 +1,11 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
+    if (window.Chart && window['chartjs-plugin-zoom']) {
+        Chart.register(window['chartjs-plugin-zoom']);
+    }
     // --- GRIDSTACK INIT (if present) ---
     const grid = GridStack.init({
         float: true,
-        cellHeight: 100,
-        disableOneColumnMode: true
+        cellHeight: 20,
     });
 
     grid.on('change', function (event, items) {
@@ -82,6 +84,21 @@
                             title: {
                                 display: true,
                                 text: label
+                            },
+                            zoom: {
+                                wheel: {
+                                    enabled: true,
+                                },
+                                pan: {
+                                    enabled: true,
+                                    mode:'x'
+                                },
+                                drag: {
+                                    enabled: true,
+                                    backgroundColor: 'rgba(0,0,0,0.1)',
+                                    modifierKey: 'ctrl'
+                                },
+                                mode: 'x'
                             }
                         },
                         scales: {

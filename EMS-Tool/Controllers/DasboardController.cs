@@ -4,6 +4,7 @@ using EMS_Tool.Model;
 using EMS_Tool.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
@@ -14,11 +15,24 @@ namespace EMS_Tool.Controllers
     {
         private readonly DashboardDataService _dashboardService;
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public DashboardController(DashboardDataService dashboardService, ApplicationDbContext context)
+        public DashboardController(DashboardDataService dashboardService, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _dashboardService = dashboardService;
             _context = context;
+            _userManager = userManager;
+        }
+
+        private async Task<UserProject> GetUserLinkedProjectAsync(int projectId)
+        {
+            if (User.IsInRole("Admin"))
+            {
+                return await _context.UserProjects.FirstOrDefaultAsync(p => p.Id == projectId);
+            }
+            var userId = _userManager.GetUserId(User);
+            return await _context.UserProjects
+                .FirstOrDefaultAsync(p => p.Id == projectId && p.UserId == userId);
         }
 
         // Helper method to parse SQL queries to get table name, X column, Y column
@@ -70,9 +84,9 @@ namespace EMS_Tool.Controllers
         // GET: /Dashboard/Details/{projectId}
         public async Task<IActionResult> Details(int projectId)
         {
-            var userProject = await _context.UserProjects.FirstOrDefaultAsync(p => p.Id == projectId);
+            var userProject = await GetUserLinkedProjectAsync(projectId);
             if (userProject == null)
-                return NotFound("Project not found.");
+                return Forbid(); // or Unauthorized(), or redirect, depending on your UX needs
 
             var connectionString = userProject.ConnectionString;
             var tables = await _dashboardService.GetTablesAsync(connectionString);
@@ -85,9 +99,9 @@ namespace EMS_Tool.Controllers
         [HttpGet]
         public async Task<IActionResult> Dashboard(int projectId, int navId)
         {
-            var userProject = await _context.UserProjects.FirstOrDefaultAsync(p => p.Id == projectId);
+            var userProject = await GetUserLinkedProjectAsync(projectId);
             if (userProject == null)
-                return NotFound("Project not found.");
+                return Forbid();
 
             var connectionString = userProject.ConnectionString;
 
@@ -96,28 +110,12 @@ namespace EMS_Tool.Controllers
 
             var navbar = navbarItems.FirstOrDefault(n => n.ID == navId) ?? new Navbar
             {
-                Name = "Default Navbar",
+                Name = "Home",
                 Sequence = 1
             };
-
+            
             var charts = await _dashboardService.GetChartsAsync(connectionString, navId);
-            if (charts == null || !charts.Any())
-            {
-                charts = new List<Chart>
-                {
-                    new Chart
-                    {
-                        PositionX = 0,
-                        PositionY = 0,
-                        Width = 400,
-                        Height = 300,
-                        ChartTitle = "Default Chart",
-                        ChartType = "bar",
-                        NavID = navId
-                    }
-                };
-            }
-
+            
             // Parse SQL query for each chart to extract tableName, X and Y columns
             var tableNames = new Dictionary<int, string>();
             var xColumns = new Dictionary<int, string>();
@@ -147,9 +145,9 @@ namespace EMS_Tool.Controllers
         [HttpGet("/api/dashboard/columns")]
         public async Task<IActionResult> GetTableColumns(int projectId, string tableName)
         {
-            var userProject = await _context.UserProjects.FirstOrDefaultAsync(p => p.Id == projectId);
+            var userProject = await GetUserLinkedProjectAsync(projectId);
             if (userProject == null)
-                return NotFound();
+                return Forbid(); // or Unauthorized(), or redirect, depending on your UX needs
 
             var connectionString = userProject.ConnectionString;
             var columns = await _dashboardService.GetColumnsAsync(connectionString, tableName);
@@ -160,9 +158,9 @@ namespace EMS_Tool.Controllers
         [HttpPost]
         public async Task<IActionResult> AddNavbar(int projectId, string name)
         {
-            var userProject = await _context.UserProjects.FirstOrDefaultAsync(p => p.Id == projectId);
+            var userProject = await GetUserLinkedProjectAsync(projectId);
             if (userProject == null)
-                return NotFound("Project not found.");
+                return Forbid(); // or Unauthorized(), or redirect, depending on your UX needs
 
             var connectionString = userProject.ConnectionString;
             var newId = await _dashboardService.AddNavbarItemAsync(connectionString, name);
@@ -173,10 +171,9 @@ namespace EMS_Tool.Controllers
         [HttpPost]
         public async Task<IActionResult> AddChart(int projectId, Chart chart)
         {
-            var userProject = await _context.UserProjects.FirstOrDefaultAsync(p => p.Id == projectId);
+            var userProject = await GetUserLinkedProjectAsync(projectId);
             if (userProject == null)
-                return NotFound("Project not found.");
-
+                return Forbid(); // or Unauthorized(), or redirect, depending on your UX needs
             var connectionString = userProject.ConnectionString;
 
             chart.PositionX = chart.PositionX == 0 ? 0 : chart.PositionX;
@@ -192,9 +189,10 @@ namespace EMS_Tool.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateChartPosition(int projectId, [FromBody] ChartPositionUpdate update)
         {
-            var userProject = await _context.UserProjects.FirstOrDefaultAsync(p => p.Id == projectId);
-            if (userProject == null)
-                return NotFound("Project not found.");
+            var userProject = await GetUserLinkedProjectAsync(projectId);
+            if(userProject == null)
+                return Forbid(); // or Unauthorized(), or redirect, depending on your UX needs
+
 
             var connectionString = userProject.ConnectionString;
 
@@ -214,9 +212,10 @@ namespace EMS_Tool.Controllers
         [HttpGet("/api/dashboard/chart-data")]
         public async Task<IActionResult> GetChartData(int projectId, int chartId)
         {
-            var userProject = await _context.UserProjects.FirstOrDefaultAsync(p => p.Id == projectId);
+            var userProject = await GetUserLinkedProjectAsync(projectId);
             if (userProject == null)
-                return NotFound("Project not found.");
+                return Forbid(); // or Unauthorized(), or redirect, depending on your UX needs
+
 
             var connectionString = userProject.ConnectionString;
 
@@ -232,9 +231,10 @@ namespace EMS_Tool.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteChart(int projectId, int chartId)
         {
-            var userProject = await _context.UserProjects.FirstOrDefaultAsync(p => p.Id == projectId);
+            var userProject = await GetUserLinkedProjectAsync(projectId);
             if (userProject == null)
-                return NotFound("Project not found.");
+                return Forbid(); // or Unauthorized(), or redirect, depending on your UX needs
+
 
             var connectionString = userProject.ConnectionString;
             await _dashboardService.DeleteChartAsync(connectionString, chartId);
@@ -245,9 +245,10 @@ namespace EMS_Tool.Controllers
         [HttpGet]
         public async Task<IActionResult> EditChart(int projectId, int chartId)
         {
-            var userProject = await _context.UserProjects.FirstOrDefaultAsync(p => p.Id == projectId);
+            var userProject = await GetUserLinkedProjectAsync(projectId);
             if (userProject == null)
-                return NotFound("Project not found.");
+                return Forbid(); // or Unauthorized(), or redirect, depending on your UX needs
+
 
             var connectionString = userProject.ConnectionString;
             var chart = await _dashboardService.GetChartByIdAsync(connectionString, chartId);
@@ -277,9 +278,10 @@ namespace EMS_Tool.Controllers
         [HttpPost]
         public async Task<IActionResult> EditChart(int projectId, Chart chart)
         {
-            var userProject = await _context.UserProjects.FirstOrDefaultAsync(p => p.Id == projectId);
+            var userProject = await GetUserLinkedProjectAsync(projectId);
             if (userProject == null)
-                return NotFound("Project not found.");
+                return Forbid(); // or Unauthorized(), or redirect, depending on your UX needs
+
 
             var connectionString = userProject.ConnectionString;
             await _dashboardService.UpdateChartAsync(connectionString, chart);
