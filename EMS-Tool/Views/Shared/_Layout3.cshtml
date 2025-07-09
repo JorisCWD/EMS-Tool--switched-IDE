@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - EMS-Tool</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png" sizes="32x32">
+
+    <script type="importmap"></script>
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/EMS_Tool.styles.css" asp-append-version="true" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    @section Scripts {
+        <script src="~/js/site.js"></script>
+    }
+</head>
+<body>
+    <header>
+        <a href="@Url.Action("Index", "Home")" title="Home">
+            <img alt="logo" src="@Url.Content("~/Images/logo.png")" width="322">
+        </a>
+    </header>
+    <div class="header-wrapper d-flex">
+        <header class="spacing"></header><header class="second-header flex-grow-1"></header>
+    </div>
+    <main class="custom-container">
+        @await Html.PartialAsync("_NavigationBar") <!-- Render the navigation bar -->
+           
+        <div class="main-container">
+            @RenderSection("Scripts", required: false)
+            @RenderBody()
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="custom-container">
+            &copy; 2025 - EMS_Tool - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+</body>
+</html>

@@ -29,12 +29,14 @@
   padding: 0;
 }
 .grid-stack > .grid-stack-item > .grid-stack-item-content {
-  margin: 0;
-  position: absolute;
-  width: auto;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
+    margin: 0;
+    position: absolute;
+    width: auto;
+    overflow: visible !important;
+    padding: 5px;
+    /*overflow-x: hidden;
+  overflow-y: auto;*/
+    }
 .grid-stack > .grid-stack-item > .ui-resizable-handle {
   position: absolute;
   font-size: 0.1px;

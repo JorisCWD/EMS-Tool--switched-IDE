@@ -149,6 +149,86 @@
                 });
             });
     });
+    // --- Live Chart Preview Logic ---
+    let previewChart;
+
+    const chartTypeSelect = document.querySelector("select[name='ChartType']");
+    const chartPreviewCanvas = document.getElementById("chartPreview");
+
+    function updatePreviewChart() {
+        const table = tableSelect.value;
+        const xCol = xColumnSelect.value;
+        const yCol = yColumnSelect.value;
+        const chartType = chartTypeSelect?.value;
+
+        if (!table || !xCol || !yCol || !chartType || !chartPreviewCanvas) return;
+
+        fetch(`/api/dashboard/sample-data?projectId=${window.projectId}&tableName=${table}&xColumn=${xCol}&yColumn=${yCol}`)
+            .then(async res => {
+                if (!res.ok) {
+                    const text = await res.text();
+                    throw new Error(`HTTP ${res.status} - ${text}`);
+                }
+
+                // Try parsing response as JSON
+                const data = await res.json();
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    throw new Error("No valid data returned for preview.");
+                }
+
+                const labels = data.map(row => {
+                    const val = row[xCol];
+                    return isLikelyDate(val) ? new Date(val).toISOString().split('T')[0] : val;
+                });
+
+                const values = data.map(row => {
+                    const val = row[yCol];
+                    return isNaN(val) ? val : Number(val);
+                });
+
+                const ctx = chartPreviewCanvas.getContext("2d");
+                if (previewChart) previewChart.destroy();
+
+                previewChart = new Chart(ctx, {
+                    type: chartType.toLowerCase(),
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: yCol,
+                            data: values,
+                            backgroundColor: 'rgba(0,123,255,0.5)',
+                            borderColor: 'rgba(0,123,255,1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: chartType === 'Pie' ? {} : {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(err => {
+                console.error("Chart preview error:", err);
+
+                const ctx = chartPreviewCanvas.getContext("2d");
+                ctx.clearRect(0, 0, chartPreviewCanvas.width, chartPreviewCanvas.height);
+                ctx.font = "16px sans-serif";
+                ctx.fillStyle = "red";
+                ctx.fillText("Preview error: " + err.message, 10, 50);
+            });
+    }
+
+    // Update preview when user selects X/Y columns or chart type
+    xColumnSelect?.addEventListener('change', updatePreviewChart);
+    yColumnSelect?.addEventListener('change', updatePreviewChart);
+    chartTypeSelect?.addEventListener('change', updatePreviewChart);
+
 
     // --- Build query before submitting add widget form ---
     document.querySelector('#addWidgetModal form')?.addEventListener('submit', function (e) {
@@ -177,32 +257,44 @@
         button.addEventListener('click', async () => {
             const chartId = button.dataset.id;
 
-            const response = await fetch(`/api/chartdata/${window.projectId}/${chartId}`);
-            const result = await response.json();
+            try {
+                const response = await fetch(`/api/chartdata/${window.projectId}/${chartId}`);
 
-            if (!result || !result.data || result.data.length === 0) {
-                alert('No data available to export.');
-                return;
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(`Export API returned ${response.status}: ${text}`);
+                }
+
+                const result = await response.json();
+
+                if (!result || !result.data || result.data.length === 0) {
+                    alert('No data available to export.');
+                    return;
+                }
+
+                const rows = result.data;
+                const headers = Object.keys(rows[0]);
+
+                const csv = [
+                    headers.join(','),
+                    ...rows.map(row => headers.map(h => `"${(row[h] ?? '').toString().replace(/"/g, '""')}"`).join(','))
+                ].join('\n');
+
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `chart-${chartId}.csv`;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                URL.revokeObjectURL(url);
+            } catch (err) {
+                console.error("Export error:", err);
+                alert("Failed to export chart. See console for details.");
             }
-
-            const rows = result.data;
-            const headers = Object.keys(rows[0]);
-
-            const csv = [
-                headers.join(','),
-                ...rows.map(row => headers.map(h => `"${(row[h] ?? '').toString().replace(/"/g, '""')}"`).join(','))
-            ].join('\n');
-
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `chart-${chartId}.csv`;
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            URL.revokeObjectURL(url);
         });
     });
+
 });

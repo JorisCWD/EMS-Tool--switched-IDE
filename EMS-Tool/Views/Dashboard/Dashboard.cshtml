@@ -28,71 +28,77 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 
-<nav class="dash-navigation">
-    <ul>
-        @foreach (var nav in navItems)
-        {
-            <li>
-                <a href="@Url.Action("Dashboard", new { projectId = ViewBag.ProjectId, navId = nav.ID })"
-                   class="@(nav.ID == selectedNavId ? "active" : "")">
-                    @nav.Name
-                </a> <!-- i want a delete button somewhere around here, nestled inside the link a element-->
-            </li>
-        }
-        <li>
-            <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addNavbarModal"
-                    data-bs-toggle="tooltip" data-bs-placement="top" title="Add Navbar Item">
-                <i class="bi bi-plus-circle"></i>
-            </button>
-        </li>
-    </ul>
-</nav>
-
 <div class="side-by-side">
     <h2 class="compact">@selectedNav.Name</h2>
-    
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addWidgetModal">Add Widget</button>
+
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addWidgetModal">Add Graph</button>
 </div>
-<div id="dashboard-container" class="mt-4 position-relative w-100 p-0">
+
+<div id="dashboard-container" class="mt-0 position-relative w-100 p-0">
     <div class="grid-stack" id="dashboard">
         @foreach (var chart in Model)
         {
             <div class="grid-stack-item"
-                    gs-x="@chart.PositionX"
-                    gs-y="@chart.PositionY"
-                    gs-w="@Math.Max(1, chart.Width / 100)"
-                    gs-h="@Math.Max(1, chart.Height / 100)"
-                    data-id="@chart.ID">
+                 gs-x="@chart.PositionX"
+                 gs-y="@chart.PositionY"
+                 gs-w="@Math.Max(1, chart.Width / 100)"
+                 gs-h="@Math.Max(1, chart.Height / 100)"
+                 data-id="@chart.ID">
 
-                <div class="grid-stack-item-content border">
-                    <!--<h5>//chart.ChartTitle</h5>-->
+                <div class="grid-stack-item-content border p-5">
+                    <!-- Header with title + dropdown -->
+                    <div class="d-flex justify-content-between align-items-right px-2 pt-2">
+
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <button class="dropdown-item text-danger delete-chart" data-id="@chart.ID">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item text-warning edit-btn"
+                                            data-id="@chart.ID"
+                                            data-title="@chart.ChartTitle"
+                                            data-charttype="@chart.ChartType"
+                                            data-query="@chart.DataQuery"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editChartModal">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item text-info export-chart" data-id="@chart.ID">
+                                        <i class="bi bi-download"></i> Export CSV
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item text-info reset-zoom-btn" data-id="@chart.ID">
+                                        <i class="bi bi-arrow-counterclockwise"></i> Reset Zoom
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Chart -->
                     <canvas id="chart-@chart.ID"
                             data-type="@chart.ChartType"
                             data-title="@chart.ChartTitle">
                     </canvas>
-                    <div class="chart-buttons">
-                        <button class="btn btn-sm btn-danger delete-chart" data-id="@chart.ID">Delete</button>
-                        <button class="btn btn-sm btn-warning edit-btn"
-                                data-id="@chart.ID"
-                                data-title="@chart.ChartTitle"
-                                data-charttype="@chart.ChartType"
-                                data-query="@chart.DataQuery"
-                                data-bs-toggle="modal"
-                                data-bs-target="#editChartModal">
-                            Edit
-                        </button>
-                        <button class="btn btn-sm btn-info export-chart" data-id="@chart.ID">Export CSV</button>
-                        <button class="btn btn-sm btn-info export-chart" id="resetZoomBtn">Reset Zoom</button>
-                    </div>
                 </div>
             </div>
         }
     </div>
 </div>
-<!-- Bootstrap Bundle JS (includes Popper) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 @await Html.PartialAsync("_AddNavbarModal")
 @await Html.PartialAsync("_AddWidgetModal")
 @await Html.PartialAsync("_EditChartModal")
-

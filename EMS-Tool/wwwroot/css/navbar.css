@@ -1,0 +1,75 @@
+﻿.custom-navbar {
+    all: unset; /* Resets the annoying styling from bootstrap */
+    margin-top: 56px;
+    background-color: #3c4962;
+    position: fixed;
+    width: 252px;
+    height: 100vh;
+}
+
+    .custom-navbar ul {
+        display: block;
+        list-style: none;
+        padding-left: 17.5px;
+        padding-top: 17.5px;
+        width: 100%;
+        font-size: 16px;
+    }
+
+        .custom-navbar ul li {
+            width: 100%;
+            margin-top: 7px;
+            height: 33px;
+            border-bottom-left-radius: 8px;
+            border-top-left-radius: 8px;
+        }
+
+            .custom-navbar ul li a, .custom-navigation ul li button {
+                display: flex;
+                text-decoration: none;
+                color: #e5e8ec;
+                cursor: pointer;
+                padding: 5px 15px;
+                width: 100%;
+                height: 100%;
+                border-bottom-left-radius: 8px;
+                border-top-left-radius: 8px;
+                box-sizing: border-box;
+            }
+            .custom-navbar ul li a i, .custom-navigation ul li button i{
+                padding-right: 8px;
+            }
+
+                .custom-navbar ul li a:hover, .custom-navigation ul li button:hover {
+                    background-color: #59667d;
+                }
+                .custom-navbar ul li a.active, .custom-navigation ul li button.active {
+                    background-color: #59667d;
+                }
+
+.custom-dropdown {
+    position: relative;
+    display: inline-block;
+    float: right;
+    height: 55px;
+}
+    .custom-dropdown-button {
+        background-color: white;
+        color: black;
+        padding: 16px;
+        font-size: 16px;
+        border: none;
+        height: 55px;
+    }
+        .custom-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 160px;
+            z-index: 1;
+        }
+            .custom-dropdown:hover .custom-dropdown-content {
+                display: block;
+            }
+
+          

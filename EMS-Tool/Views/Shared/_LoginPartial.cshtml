@@ -6,29 +6,32 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <li>
-        <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Profiel </a>
+    <li class="nav-item me-2">
+        <a id="manage" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"
+           class="btn btn-light w-75" style="margin-right:5px;">
+            <i class="bi bi-person-fill-gear"></i> Profiel
+        </a>
     </li>
-    <li >
-        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button id="logout" type="submit">Logout</button>
+    <li class="nav-item">
+        <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout"
+              asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })"
+              class="d-inline">
+            <button id="logout" type="submit" class="btn btn-light w-75" style="margin-right:5px;">
+                <i class="bi bi-power"></i> Logout
+            </button>
         </form>
     </li>
-    <p><b>Active gebruiker: </b></p>
-    <p> @UserManager.GetUserName(User) </p>
-    <div class="col-sm-12" style="text-align: center; font-size: x-small;">
-        <p>Neem voor vragen of klachten contact op met Telecontrol.</p>
-        <p>telecontrol@croonwolterendros.nl</p>
-        <p>+31 (0) 800 8654 654</p>
-        <p>Telecontrol is onderdeel van Croonwolter&dros.</p>
-    </div>
 }
 else
 {
-    <li class="nav-item">
-        <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    <li class="nav-item me-2">
+        <a class="btn btn-outline-light" id="register" asp-area="Identity" asp-page="/Account/Register">
+            Register
+        </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        <a class="btn btn-outline-success" id="login" asp-area="Identity" asp-page="/Account/Login">
+            Login
+        </a>
     </li>
 }

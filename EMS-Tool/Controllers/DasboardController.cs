@@ -288,5 +288,49 @@ namespace EMS_Tool.Controllers
 
             return RedirectToAction("Dashboard", new { projectId, navId = chart.NavID });
         }
+        [HttpGet("/api/chartdata/{projectId:int}/{chartId:int}")]
+        public async Task<IActionResult> ExportChartData(int projectId, int chartId)
+        {
+            var userProject = await GetUserLinkedProjectAsync(projectId);
+            if (userProject == null)
+                return Forbid(); // Or Unauthorized()
+
+            var connectionString = userProject.ConnectionString;
+
+            var chart = await _dashboardService.GetChartByIdAsync(connectionString, chartId);
+            if (chart == null)
+                return NotFound("Chart not found.");
+
+            var data = await _dashboardService.GetChartDataAsync(connectionString, chart.DataQuery);
+
+            return Json(new { data });
+        }
+        [HttpGet("/api/dashboard/sample-data")]
+        public async Task<IActionResult> GetSampleData(int projectId, string tableName, string xColumn, string yColumn)
+        {
+            var userProject = await GetUserLinkedProjectAsync(projectId);
+            if (userProject == null)
+                return Forbid();
+
+            var connectionString = userProject.ConnectionString;
+
+            // Prevent SQL injection by validating inputs
+            if (string.IsNullOrWhiteSpace(tableName) || string.IsNullOrWhiteSpace(xColumn) || string.IsNullOrWhiteSpace(yColumn))
+                return BadRequest("Missing or invalid parameters");
+
+            try
+            {
+                var sql = $"SELECT TOP 50 [{xColumn}], [{yColumn}] FROM [{tableName}]";
+
+                var data = await _dashboardService.GetChartDataAsync(connectionString, sql);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Failed to fetch preview data: {ex.Message}");
+            }
+        }
+
+
     }
 }

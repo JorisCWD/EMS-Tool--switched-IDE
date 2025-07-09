@@ -1,0 +1,31 @@
+﻿@page
+@using EMS_Tool.Model
+@model IEnumerable<Chart>
+
+@{
+    var selectedNav = ViewBag.Navbar as Navbar ?? new Navbar { Name = "Default Navbar" };
+    var navItems = ViewBag.NavbarItems as List<Navbar> ?? new List<Navbar>();
+    int selectedNavId = ViewBag.NavID ?? 0;
+}
+@{
+}
+<ul>
+    <li>
+        <h4><i class="bi bi-graph-up"></i>@await Component.InvokeAsync("ProjectName")</h4>
+    </li>
+    @foreach (var nav in navItems)
+    {
+        <li>
+            <a href="@Url.Action("Dashboard", new { projectId = ViewBag.ProjectId, navId = nav.ID })"
+               class="@(nav.ID == selectedNavId ? "active" : "")">
+                @nav.Name
+            </a> <!-- i want a delete button somewhere around here, nestled inside the link a element-->
+        </li>
+    }
+    <li style="padding-left:10px;padding-right:27.5px">
+        <button class="btn btn-outline-light w-100" data-bs-toggle="modal" data-bs-target="#addNavbarModal"
+                data-bs-toggle="tooltip" data-bs-placement="top" title="Add Navbar Item">
+            <i class="bi bi-plus-circle"></i>
+        </button>
+    </li>
+</ul>

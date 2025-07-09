@@ -1,10 +1,10 @@
 ﻿@model EMS_Tool.Model.UserProjectViewModel
 @{
-	Layout = "_Layout2";
+	Layout = "_Layout";
 }
 
 <header class="custom-page-header">
-    <h2>Welcome, @Model.Email</h2>
+    <h2>Gebouwen</h2>
 </header>
 
 @if (Model.AssignedProjects.Any())
@@ -13,7 +13,7 @@
     {
         <div class="building-tile">
             <a href="@Url.Action("Dashboard", "Dashboard", new { projectId = project.Id, navId = 1})">
-                <div class="building-img">block</div>
+                <div class="building-img"></div>
                 <div class="project-number">@project.ProjectNumber</div>
             </a>
         </div>
@@ -21,5 +21,5 @@
 }
 else
 {
-    <p>No projects assigned to you.</p>
+    <p style="color:black;font-size:15px;">No projects assigned to you.</p>
 }

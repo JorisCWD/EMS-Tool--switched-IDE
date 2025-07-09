@@ -1,23 +1,39 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-<div class="custom-navigation">
-    <ul>
+@{
+    var currentPage = ViewContext.ActionDescriptor.DisplayName;
+}
+
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<ul>
+    <li>
+        <h4>NAVIGATION</h4>
+    </li>
+    <li>
+        <a asp-controller="Home" asp-action="Index" class="@(IsActive("Home", "Index"))"><i class="bi bi-buildings"></i>  Gebouwen</a>
+    </li>
+    @if (User.IsInRole("Admin"))
+    {
         <li>
-            <a asp-controller="Home" asp-action="Index" class="@(IsActive("Home", "Index"))">Home</a>
+            <a asp-controller="Admin" asp-action="Index" class="@(IsActive("Admin", "Index"))"><i class="bi bi-building-gear"></i>  Admin</a>
         </li>
-        @if (User.IsInRole("Admin"))
-        {
-            <li>
-                <a asp-controller="Admin" asp-action="Index" class="@(IsActive("Admin", "Index"))">Admin</a>
-            </li>
-        }
-        <li>
-            <a href="https://github.com/JorisCWD/EMS-Tool--switched-IDE">Versie</a>
-        </li>
-        <partial name="_LoginPartial" />
-    </ul>
-</div>
+    }
+    <li>
+        <a href="https://github.com/JorisCWD/EMS-Tool--switched-IDE"><i class="bi bi-github"></i>Versie</a>
+    </li>
+</ul>
+
+@if (currentController == "Dashboard")
+{
+    <partial name="_Navbar" />
+}
+
+
 @functions {
     public string IsActive(string controller, string action)
     {

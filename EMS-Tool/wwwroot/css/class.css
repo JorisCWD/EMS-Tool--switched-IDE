@@ -1,0 +1,112 @@
+﻿.custom-page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* full viewport height */
+}
+
+.custom-page-header {
+    width: 100%;
+    font-size: 10px;
+    border-bottom: 1px solid #C8C7CC;
+}
+
+.layout-topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    width: 100%;
+    height: 55px;
+    background-color: white;
+    box-shadow: 0 10px 15px -10px rgba(0, 0, 0, 0.1);
+}
+
+.custom-content-wrapper {
+    flex: 1;
+    padding-top: 84px;
+    padding-left: 28px;
+    padding-right: 28px;
+    padding-bottom: 28px;
+    margin-left: 252px;
+    box-sizing: border-box;
+    background-color: #f4f8fd;
+    display: block;
+}
+
+.custom-content-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 28px;
+    background-color: white;
+    box-shadow: 0 10px 15px -10px rgba(0, 0, 0, 0.1);
+}
+
+.custom-footer {
+    margin-left: 252px;
+    height: 86px;
+    background-color: white;
+    padding: 20px;
+    text-align: left;
+    box-shadow: 0 10px 15px -10px rgba(0, 0, 0, 0.1);
+}
+
+/* Table -------------------------------------------------------------------------------*/
+.building-tile {
+    background-color: #f5f5f5;
+    border: 1px solid #C8C7CC;
+    width: 158px;
+    display: inline-block;
+}
+
+.building-img {
+    height: 158px;
+    border-bottom: 1px solid #C8C7CC;
+    background-color: #f5f5f5;
+}
+
+.project-number {
+    background-color: #f5f5f5;
+}
+
+.compact {
+    width: 79%;
+    margin: 0;
+}
+
+.side-by-side {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px;
+}
+
+.chart-buttons {
+    display: flex;
+    gap: 0.5rem; /* spacing between buttons */
+    padding: 0.5rem 0; /* optional vertical spacing */
+    flex-wrap: wrap; /* in case buttons overflow container */
+    position: absolute;
+    bottom: 0.5rem;
+    left: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.chart-container {
+    width: 100%;
+    max-width: 100%;
+    height: 400px;
+    max-height: 80vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+    position: relative;
+}
+
+    .chart-container canvas {
+        max-width: 100%;
+        max-height: 100%;
+        height: auto;
+        display: block;
+    }
