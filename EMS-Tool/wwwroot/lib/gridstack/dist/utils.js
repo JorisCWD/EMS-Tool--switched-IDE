@@ -1,11 +1,11 @@
 /**
- * utils.ts 8.0.0
- * Copyright (c) 2021 Alain Dumesny - see GridStack root license
+ * utils.ts 12.2.2
+ * Copyright (c) 2021-2024 Alain Dumesny - see GridStack root license
  */
 /** checks for obsolete method names */
 // eslint-disable-next-line
 export function obsolete(self, f, oldName, newName, rev) {
-    let wrapper = (...args) => {
+    const wrapper = (...args) => {
         console.warn('gridstack.js: Function `' + oldName + '` is deprecated in ' + rev + ' and has been replaced ' +
             'with `' + newName + '`. It will be **removed** in a future release');
         return f.apply(self, args);
@@ -29,7 +29,7 @@ export function obsoleteOptsDel(opts, oldName, rev, info) {
 }
 /** checks for obsolete Jquery element attributes */
 export function obsoleteAttr(el, oldName, newName, rev) {
-    let oldAttr = el.getAttribute(oldName);
+    const oldAttr = el.getAttribute(oldName);
     if (oldAttr !== null) {
         el.setAttribute(newName, oldAttr);
         console.warn('gridstack.js: attribute `' + oldName + '`=' + oldAttr + ' is deprecated on this object in ' + rev + ' and has been replaced with `' +
@@ -40,46 +40,73 @@ export function obsoleteAttr(el, oldName, newName, rev) {
  * Utility methods
  */
 export class Utils {
-    /** convert a potential selector into actual list of html elements */
-    static getElements(els) {
+    /** convert a potential selector into actual list of html elements. optional root which defaults to document (for shadow dom) */
+    static getElements(els, root = document) {
         if (typeof els === 'string') {
-            let list = document.querySelectorAll(els);
+            const doc = ('getElementById' in root) ? root : undefined;
+            // Note: very common for people use to id='1,2,3' which is only legal as HTML5 id, but not CSS selectors
+            // so if we start with a number, assume it's an id and just return that one item...
+            // see https://github.com/gridstack/gridstack.js/issues/2234#issuecomment-1523796562
+            if (doc && !isNaN(+els[0])) { // start with digit
+                const el = doc.getElementById(els);
+                return el ? [el] : [];
+            }
+            let list = root.querySelectorAll(els);
             if (!list.length && els[0] !== '.' && els[0] !== '#') {
-                list = document.querySelectorAll('.' + els);
+                list = root.querySelectorAll('.' + els);
                 if (!list.length) {
-                    list = document.querySelectorAll('#' + els);
+                    list = root.querySelectorAll('#' + els);
                 }
             }
             return Array.from(list);
         }
         return [els];
     }
-    /** convert a potential selector into actual single element */
-    static getElement(els) {
+    /** convert a potential selector into actual single element. optional root which defaults to document (for shadow dom) */
+    static getElement(els, root = document) {
         if (typeof els === 'string') {
+            const doc = ('getElementById' in root) ? root : undefined;
             if (!els.length)
                 return null;
-            if (els[0] === '#') {
-                return document.getElementById(els.substring(1));
+            if (doc && els[0] === '#') {
+                return doc.getElementById(els.substring(1));
             }
-            if (els[0] === '.' || els[0] === '[') {
-                return document.querySelector(els);
+            if (els[0] === '#' || els[0] === '.' || els[0] === '[') {
+                return root.querySelector(els);
             }
             // if we start with a digit, assume it's an id (error calling querySelector('#1')) as class are not valid CSS
-            if (!isNaN(+els[0])) { // start with digit
-                return document.getElementById(els);
+            if (doc && !isNaN(+els[0])) { // start with digit
+                return doc.getElementById(els);
             }
-            // finally try string, then id then class
-            let el = document.querySelector(els);
-            if (!el) {
-                el = document.getElementById(els);
+            // finally try string, then id, then class
+            let el = root.querySelector(els);
+            if (doc && !el) {
+                el = doc.getElementById(els);
             }
             if (!el) {
-                el = document.querySelector('.' + els);
+                el = root.querySelector('.' + els);
             }
             return el;
         }
         return els;
+    }
+    /** true if widget (or grid) makes this item lazyLoad */
+    static lazyLoad(n) {
+        return n.lazyLoad || n.grid?.opts?.lazyLoad && n.lazyLoad !== false;
+    }
+    /** create a div with the given classes */
+    static createDiv(classes, parent) {
+        const el = document.createElement('div');
+        classes.forEach(c => { if (c)
+            el.classList.add(c); });
+        parent?.appendChild(el);
+        return el;
+    }
+    /** true if we should resize to content. strict=true when only 'sizeToContent:true' and not a number which lets user adjust */
+    static shouldSizeToContent(n, strict = false) {
+        return n?.grid && (strict ?
+            (n.sizeToContent === true || (n.grid.opts.sizeToContent === true && n.sizeToContent === undefined)) :
+            (!!n.sizeToContent || (n.grid.opts.sizeToContent && n.sizeToContent !== false)));
     }
     /** returns true if a and b overlap */
     static isIntercepted(a, b) {
@@ -91,12 +118,12 @@ export class Utils {
     }
     /** returns the area a and b overlap */
     static areaIntercept(a, b) {
-        let x0 = (a.x > b.x) ? a.x : b.x;
-        let x1 = (a.x + a.w < b.x + b.w) ? a.x + a.w : b.x + b.w;
+        const x0 = (a.x > b.x) ? a.x : b.x;
+        const x1 = (a.x + a.w < b.x + b.w) ? a.x + a.w : b.x + b.w;
         if (x1 <= x0)
             return 0; // no overlap
-        let y0 = (a.y > b.y) ? a.y : b.y;
-        let y1 = (a.y + a.h < b.y + b.h) ? a.y + a.h : b.y + b.h;
+        const y0 = (a.y > b.y) ? a.y : b.y;
+        const y1 = (a.y + a.h < b.y + b.h) ? a.y + a.h : b.y + b.h;
         if (y1 <= y0)
             return 0; // no overlap
         return (x1 - x0) * (y1 - y0);
@@ -108,61 +135,20 @@ export class Utils {
     /**
      * Sorts array of nodes
      * @param nodes array to sort
-     * @param dir 1 for asc, -1 for desc (optional)
-     * @param width width of the grid. If undefined the width will be calculated automatically (optional).
+     * @param dir 1 for ascending, -1 for descending (optional)
      **/
-    static sort(nodes, dir, column) {
-        column = column || nodes.reduce((col, n) => Math.max(n.x + n.w, col), 0) || 12;
-        if (dir === -1)
-            return nodes.sort((a, b) => (b.x + b.y * column) - (a.x + a.y * column));
-        else
-            return nodes.sort((b, a) => (b.x + b.y * column) - (a.x + a.y * column));
+    static sort(nodes, dir = 1) {
+        const und = 10000;
+        return nodes.sort((a, b) => {
+            const diffY = dir * ((a.y ?? und) - (b.y ?? und));
+            if (diffY === 0)
+                return dir * ((a.x ?? und) - (b.x ?? und));
+            return diffY;
+        });
     }
-    /**
-     * creates a style sheet with style id under given parent
-     * @param id will set the 'gs-style-id' attribute to that id
-     * @param parent to insert the stylesheet as first child,
-     * if none supplied it will be appended to the document head instead.
-     */
-    static createStylesheet(id, parent, options) {
-        let style = document.createElement('style');
-        const nonce = options?.nonce;
-        if (nonce)
-            style.nonce = nonce;
-        style.setAttribute('type', 'text/css');
-        style.setAttribute('gs-style-id', id);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if (style.styleSheet) { // TODO: only CSSImportRule have that and different beast ??
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            style.styleSheet.cssText = '';
-        }
-        else {
-            style.appendChild(document.createTextNode('')); // WebKit hack
-        }
-        if (!parent) {
-            // default to head
-            parent = document.getElementsByTagName('head')[0];
-            parent.appendChild(style);
-        }
-        else {
-            parent.insertBefore(style, parent.firstChild);
-        }
-        return style.sheet;
-    }
-    /** removed the given stylesheet id */
-    static removeStylesheet(id) {
-        let el = document.querySelector('STYLE[gs-style-id=' + id + ']');
-        if (el && el.parentNode)
-            el.remove();
-    }
-    /** inserts a CSS rule */
-    static addCSSRule(sheet, selector, rules) {
-        if (typeof sheet.addRule === 'function') {
-            sheet.addRule(selector, rules);
-        }
-        else if (typeof sheet.insertRule === 'function') {
-            sheet.insertRule(`${selector}{${rules}}`);
-        }
+    /** find an item by id */
+    static find(nodes, id) {
+        return id ? nodes.find(n => n.id === id) : undefined;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static toBool(v) {
@@ -182,12 +168,16 @@ export class Utils {
         let h;
         let unit = 'px';
         if (typeof val === 'string') {
-            let match = val.match(/^(-[0-9]+\.[0-9]+|[0-9]*\.[0-9]+|-[0-9]+|[0-9]+)(px|em|rem|vh|vw|%)?$/);
-            if (!match) {
-                throw new Error('Invalid height');
+            if (val === 'auto' || val === '')
+                h = 0;
+            else {
+                const match = val.match(/^(-[0-9]+\.[0-9]+|[0-9]*\.[0-9]+|-[0-9]+|[0-9]+)(px|em|rem|vh|vw|%|cm|mm)?$/);
+                if (!match) {
+                    throw new Error(`Invalid height val = ${val}`);
+                }
+                unit = match[2] || 'px';
+                h = parseFloat(match[1]);
             }
-            unit = match[2] || 'px';
-            h = parseFloat(match[1]);
         }
         else {
             h = val;
@@ -251,7 +241,7 @@ export class Utils {
     }
     /** true if a and b has same size & position */
     static samePos(a, b) {
-        return a && b && a.x === b.x && a.y === b.y && a.w === b.w && a.h === b.h;
+        return a && b && a.x === b.x && a.y === b.y && (a.w || 1) === (b.w || 1) && (a.h || 1) === (b.h || 1);
     }
     /** given a node, makes sure it's min/max are valid */
     static sanitizeMinMax(node) {
@@ -274,17 +264,14 @@ export class Utils {
         if (typeof a !== 'object' || typeof b !== 'object')
             return;
         for (let key in a) {
-            let val = a[key];
-            if (key[0] === '_' || val === b[key]) {
+            const aVal = a[key];
+            const bVal = b[key];
+            if (key[0] === '_' || aVal === bVal) {
                 delete a[key];
             }
-            else if (val && typeof val === 'object' && b[key] !== undefined) {
-                for (let i in val) {
-                    if (val[i] === b[key][i] || i[0] === '_') {
-                        delete val[i];
-                    }
-                }
-                if (!Object.keys(val).length) {
+            else if (aVal && typeof aVal === 'object' && bVal !== undefined) {
+                Utils.removeInternalAndSame(aVal, bVal);
+                if (!Object.keys(aVal).length) {
                     delete a[key];
                 }
             }
@@ -314,14 +301,13 @@ export class Utils {
             delete n.h;
     }
     /** return the closest parent (or itself) matching the given class */
-    static closestUpByClass(el, name) {
-        while (el) {
-            if (el.classList.contains(name))
-                return el;
-            el = el.parentElement;
-        }
-        return null;
-    }
+    // static closestUpByClass(el: HTMLElement, name: string): HTMLElement {
+    //   while (el) {
+    //     if (el.classList.contains(name)) return el;
+    //     el = el.parentElement
+    //   }
+    //   return null;
+    // }
     /** delay calling the given function for given delay, preventing new calls from happening while waiting */
     static throttle(func, delay) {
         let isWaiting = false;
@@ -333,7 +319,7 @@ export class Utils {
         };
     }
     static removePositioningStyles(el) {
-        let style = el.style;
+        const style = el.style;
         if (style.position) {
             style.removeProperty('position');
         }
@@ -366,18 +352,18 @@ export class Utils {
     /** @internal */
     static updateScrollPosition(el, position, distance) {
         // is widget in view?
-        let rect = el.getBoundingClientRect();
-        let innerHeightOrClientHeight = (window.innerHeight || document.documentElement.clientHeight);
+        const rect = el.getBoundingClientRect();
+        const innerHeightOrClientHeight = (window.innerHeight || document.documentElement.clientHeight);
         if (rect.top < 0 ||
             rect.bottom > innerHeightOrClientHeight) {
             // set scrollTop of first parent that scrolls
             // if parent is larger than el, set as low as possible
             // to get entire widget on screen
-            let offsetDiffDown = rect.bottom - innerHeightOrClientHeight;
-            let offsetDiffUp = rect.top;
-            let scrollEl = this.getScrollElement(el);
+            const offsetDiffDown = rect.bottom - innerHeightOrClientHeight;
+            const offsetDiffUp = rect.top;
+            const scrollEl = this.getScrollElement(el);
             if (scrollEl !== null) {
-                let prevScroll = scrollEl.scrollTop;
+                const prevScroll = scrollEl.scrollTop;
                 if (rect.top < 0 && distance < 0) {
                     // moving up
                     if (el.offsetHeight > innerHeightOrClientHeight) {
@@ -466,7 +452,7 @@ export class Utils {
     static appendTo(el, parent) {
         let parentNode;
         if (typeof parent === 'string') {
-            parentNode = document.querySelector(parent);
+            parentNode = Utils.getElement(parent);
         }
         else {
             parentNode = parent;
@@ -476,7 +462,7 @@ export class Utils {
         }
     }
     // public static setPositionRelative(el: HTMLElement): void {
-    //   if (!(/^(?:r|a|f)/).test(window.getComputedStyle(el).position)) {
+    //   if (!(/^(?:r|a|f)/).test(getComputedStyle(el).position)) {
     //     el.style.position = "relative";
     //   }
     // }
@@ -507,34 +493,81 @@ export class Utils {
             cancelable: true,
             target: info.target ? info.target : e.target
         };
-        // don't check for `instanceof DragEvent` as Safari use MouseEvent #1540
-        if (e.dataTransfer) {
-            evt['dataTransfer'] = e.dataTransfer; // workaround 'readonly' field.
-        }
         ['altKey', 'ctrlKey', 'metaKey', 'shiftKey'].forEach(p => evt[p] = e[p]); // keys
         ['pageX', 'pageY', 'clientX', 'clientY', 'screenX', 'screenY'].forEach(p => evt[p] = e[p]); // point info
         return { ...evt, ...obj };
     }
-    /** copies the MouseEvent properties and sends it as another event to the given target */
+    /** copies the MouseEvent (or convert Touch) properties and sends it as another event to the given target */
     static simulateMouseEvent(e, simulatedType, target) {
-        const simulatedEvent = document.createEvent('MouseEvents');
-        simulatedEvent.initMouseEvent(simulatedType, // type
-        true, // bubbles
-        true, // cancelable
-        window, // view
-        1, // detail
-        e.screenX, // screenX
-        e.screenY, // screenY
-        e.clientX, // clientX
-        e.clientY, // clientY
-        e.ctrlKey, // ctrlKey
-        e.altKey, // altKey
-        e.shiftKey, // shiftKey
-        e.metaKey, // metaKey
-        0, // button
-        e.target // relatedTarget
-        );
+        const me = e;
+        const simulatedEvent = new MouseEvent(simulatedType, {
+            bubbles: true,
+            composed: true,
+            cancelable: true,
+            view: window,
+            detail: 1,
+            screenX: e.screenX,
+            screenY: e.screenY,
+            clientX: e.clientX,
+            clientY: e.clientY,
+            ctrlKey: me.ctrlKey ?? false,
+            altKey: me.altKey ?? false,
+            shiftKey: me.shiftKey ?? false,
+            metaKey: me.metaKey ?? false,
+            button: 0,
+            relatedTarget: e.target
+        });
         (target || e.target).dispatchEvent(simulatedEvent);
+    }
+    /**
+     * defines an element that is used to get the offset and scale from grid transforms
+     * returns the scale and offsets from said element
+    */
+    static getValuesFromTransformedElement(parent) {
+        const transformReference = document.createElement('div');
+        Utils.addElStyles(transformReference, {
+            opacity: '0',
+            position: 'fixed',
+            top: 0 + 'px',
+            left: 0 + 'px',
+            width: '1px',
+            height: '1px',
+            zIndex: '-999999',
+        });
+        parent.appendChild(transformReference);
+        const transformValues = transformReference.getBoundingClientRect();
+        parent.removeChild(transformReference);
+        transformReference.remove();
+        return {
+            xScale: 1 / transformValues.width,
+            yScale: 1 / transformValues.height,
+            xOffset: transformValues.left,
+            yOffset: transformValues.top,
+        };
+    }
+    /** swap the given object 2 field values */
+    static swap(o, a, b) {
+        if (!o)
+            return;
+        const tmp = o[a];
+        o[a] = o[b];
+        o[b] = tmp;
+    }
+    /** returns true if event is inside the given element rectangle */
+    // Note: Safari Mac has null event.relatedTarget which causes #1684 so check if DragEvent is inside the coordinates instead
+    //    this.el.contains(event.relatedTarget as HTMLElement)
+    // public static inside(e: MouseEvent, el: HTMLElement): boolean {
+    //   // srcElement, toElement, target: all set to placeholder when leaving simple grid, so we can't use that (Chrome)
+    //   const target: HTMLElement = e.relatedTarget || (e as any).fromElement;
+    //   if (!target) {
+    //     const { bottom, left, right, top } = el.getBoundingClientRect();
+    //     return (e.x < right && e.x > left && e.y < bottom && e.y > top);
+    //   }
+    //   return el.contains(target);
+    // }
+    /** true if the item can be rotated (checking for prop, not space available) */
+    static canBeRotated(n) {
+        return !(!n || n.w === n.h || n.locked || n.noResize || n.grid?.opts.disableResize || (n.minW && n.minW === n.maxW) || (n.minH && n.minH === n.maxH));
     }
 }
 //# sourceMappingURL=utils.js.map

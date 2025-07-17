@@ -7,7 +7,7 @@
             "destination": "wwwroot/lib/chart.js/"
         },
         {
-            "library": "gridstack@8.0.0",
+            "library": "gridstack@12.2.2",
             "destination": "wwwroot/lib/gridstack/"
         },
         {

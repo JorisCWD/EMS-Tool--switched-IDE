@@ -1,6 +1,6 @@
 /**
- * dd-droppable.ts 8.0.0
- * Copyright (c) 2021-2022 Alain Dumesny - see GridStack root license
+ * dd-droppable.ts 12.2.2
+ * Copyright (c) 2021-2024  Alain Dumesny - see GridStack root license
  */
 import { DDManager } from './dd-manager';
 import { DDBaseImplement } from './dd-base-impl';
@@ -8,10 +8,10 @@ import { Utils } from './utils';
 import { isTouch, pointerenter, pointerleave } from './dd-touch';
 // let count = 0; // TEST
 export class DDDroppable extends DDBaseImplement {
-    constructor(el, opts = {}) {
+    constructor(el, option = {}) {
         super();
         this.el = el;
-        this.option = opts;
+        this.option = option;
         // create var event binding so we can easily remove and still look like TS methods (unlike anonymous functions)
         this._mouseEnter = this._mouseEnter.bind(this);
         this._mouseLeave = this._mouseLeave.bind(this);
@@ -73,7 +73,7 @@ export class DDDroppable extends DDBaseImplement {
         e.stopPropagation();
         // make sure when we enter this, that the last one gets a leave FIRST to correctly cleanup as we don't always do
         if (DDManager.dropElement && DDManager.dropElement !== this) {
-            DDManager.dropElement._mouseLeave(e);
+            DDManager.dropElement._mouseLeave(e, true); // calledByEnter = true
         }
         DDManager.dropElement = this;
         const ev = Utils.initEvent(e, { target: this.el, type: 'dropover' });
@@ -85,7 +85,7 @@ export class DDDroppable extends DDBaseImplement {
         // console.log('tracking'); // TEST
     }
     /** @internal called when the item is leaving our area, stop tracking if we had moving item */
-    _mouseLeave(e) {
+    _mouseLeave(e, calledByEnter = false) {
         // console.log(`${count++} Leave ${this.el.id || (this.el as GridHTMLElement).gridstack.opts.id}`); // TEST
         if (!DDManager.dragElement || DDManager.dropElement !== this)
             return;
@@ -100,14 +100,16 @@ export class DDDroppable extends DDBaseImplement {
             delete DDManager.dropElement;
             // console.log('not tracking'); // TEST
             // if we're still over a parent droppable, send it an enter as we don't get one from leaving nested children
-            let parentDrop;
-            let parent = this.el.parentElement;
-            while (!parentDrop && parent) {
-                parentDrop = parent.ddElement?.ddDroppable;
-                parent = parent.parentElement;
-            }
-            if (parentDrop) {
-                parentDrop._mouseEnter(e);
+            if (!calledByEnter) {
+                let parentDrop;
+                let parent = this.el.parentElement;
+                while (!parentDrop && parent) {
+                    parentDrop = parent.ddElement?.ddDroppable;
+                    parent = parent.parentElement;
+                }
+                if (parentDrop) {
+                    parentDrop._mouseEnter(e);
+                }
             }
         }
     }
@@ -129,7 +131,7 @@ export class DDDroppable extends DDBaseImplement {
         if (!this.option.accept)
             return this;
         if (typeof this.option.accept === 'string') {
-            this.accept = (el) => el.matches(this.option.accept);
+            this.accept = (el) => el.classList.contains(this.option.accept) || el.matches(this.option.accept);
         }
         else {
             this.accept = this.option.accept;

@@ -2,11 +2,15 @@
     if (window.Chart && window['chartjs-plugin-zoom']) {
         Chart.register(window['chartjs-plugin-zoom']);
     }
-    // --- GRIDSTACK INIT (if present) ---
+    // --- GRIDSTACK INIT (v12) ---
     const grid = GridStack.init({
-        float: true,
-        cellHeight: 20,
+        float: true,          // allows free movement
+        cellHeight: 20,       // 20px row height
+        column: 60,           // number of columns in the grid
+        margin: 2,            // optional: 2px margin between items (default was 20px before)
+        disableOneColumnMode: true  // optional: prevents collapsing to single-column on small screens
     });
+
 
     grid.on('change', function (event, items) {
         items.forEach(item => {
@@ -27,6 +31,29 @@
         });
     });
 
+    document.querySelectorAll('.toggle-lock-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const chartId = button.dataset.id;
+            const itemEl = document.querySelector(`.grid-stack-item[data-id="${chartId}"]`);
+            if (!itemEl || !itemEl.gridstackNode) return;
+
+            const node = itemEl.gridstackNode;
+            const isLocked = node.disableDrag && node.disableResize;
+
+            // Toggle drag/resize
+            grid.update(itemEl, {
+                disableDrag: !isLocked,
+                disableResize: !isLocked
+            }, true); // <-- this "true" is important (withContent=true)
+
+            // Update button icon/text
+            button.innerHTML = !isLocked
+                ? '<i class="bi bi-unlock"></i> Unlock Widget'
+                : '<i class="bi bi-lock"></i> Lock Widget';
+        });
+    });
+
+
     // --- Render charts with real data ---
     const canvasElements = document.querySelectorAll("canvas[id^='chart-']");
 
@@ -44,14 +71,19 @@
     canvasElements.forEach(canvas => {
         const chartId = canvas.id.replace("chart-", "");
         const type = canvas.dataset.type || "bar";
-        const label = canvas.dataset.title || `Chart ${chartId}`;
         const ctx = canvas.getContext('2d');
 
-        fetch(`/api/dashboard/chart-data?projectId=${window.projectId}&chartId=${chartId}`)
-            .then(response => response.json())
-            .then(data => {
+        const metaUrl = `/api/chart-meta/chart-meta?chartId=${chartId}&projectId=${window.projectId}`;
+        const dataUrl = `/api/dashboard/chart-data?projectId=${window.projectId}&chartId=${chartId}`;
+
+        Promise.all([
+            fetch(metaUrl).then(res => res.json()),
+            fetch(dataUrl).then(res => res.json())
+        ])
+            .then(([metaResult, data]) => {
+                const meta = metaResult.meta || {};
                 if (!data || data.length === 0) {
-                    throw new Error("No data returned from query.");
+                    throw new Error("No data returned from chart-data API.");
                 }
 
                 const xKeys = Object.keys(data[0]);
@@ -68,7 +100,7 @@
                 const chartData = {
                     labels: labels,
                     datasets: [{
-                        label: label,
+                        label: meta.label || `Chart ${chartId}`,
                         data: values,
                         backgroundColor: '#007bff'
                     }]
@@ -83,16 +115,18 @@
                         plugins: {
                             title: {
                                 display: true,
-                                text: label
+                                text: canvas.dataset.title || meta.label || `Chart ${chartId}`
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return `${context.dataset.label}: ${context.formattedValue} ${meta.unit || ''}`;
+                                    }
+                                }
                             },
                             zoom: {
-                                wheel: {
-                                    enabled: true,
-                                },
-                                pan: {
-                                    enabled: true,
-                                    mode:'x'
-                                },
+                                wheel: { enabled: true },
+                                pan: { enabled: true, mode: 'x' },
                                 drag: {
                                     enabled: true,
                                     backgroundColor: 'rgba(0,0,0,0.1)',
@@ -102,6 +136,12 @@
                             }
                         },
                         scales: {
+                            y: {
+                                title: {
+                                    display: !!meta.unit,
+                                    text: meta.unit || ''
+                                }
+                            },
                             x: {
                                 ticks: {
                                     maxRotation: 45,

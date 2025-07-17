@@ -1,11 +1,17 @@
 /**
- * utils.ts 8.0.0
- * Copyright (c) 2021 Alain Dumesny - see GridStack root license
+ * utils.ts 12.2.2
+ * Copyright (c) 2021-2024 Alain Dumesny - see GridStack root license
  */
 import { GridStackElement, GridStackNode, GridStackOptions, numberOrString, GridStackPosition, GridStackWidget } from './types';
 export interface HeightData {
     h: number;
     unit: string;
+}
+export interface DragTransform {
+    xScale: number;
+    yScale: number;
+    xOffset: number;
+    yOffset: number;
 }
 /** checks for obsolete method names */
 export declare function obsolete(self: any, f: any, oldName: string, newName: string, rev: string): (...args: any[]) => any;
@@ -19,10 +25,16 @@ export declare function obsoleteAttr(el: HTMLElement, oldName: string, newName: 
  * Utility methods
  */
 export declare class Utils {
-    /** convert a potential selector into actual list of html elements */
-    static getElements(els: GridStackElement): HTMLElement[];
-    /** convert a potential selector into actual single element */
-    static getElement(els: GridStackElement): HTMLElement;
+    /** convert a potential selector into actual list of html elements. optional root which defaults to document (for shadow dom) */
+    static getElements(els: GridStackElement, root?: HTMLElement | Document): HTMLElement[];
+    /** convert a potential selector into actual single element. optional root which defaults to document (for shadow dom) */
+    static getElement(els: GridStackElement, root?: HTMLElement | Document): HTMLElement;
+    /** true if widget (or grid) makes this item lazyLoad */
+    static lazyLoad(n: GridStackNode): boolean;
+    /** create a div with the given classes */
+    static createDiv(classes: string[], parent?: HTMLElement): HTMLElement;
+    /** true if we should resize to content. strict=true when only 'sizeToContent:true' and not a number which lets user adjust */
+    static shouldSizeToContent(n: GridStackNode | undefined, strict?: boolean): boolean;
     /** returns true if a and b overlap */
     static isIntercepted(a: GridStackPosition, b: GridStackPosition): boolean;
     /** returns true if a and b touch edges or corners */
@@ -34,23 +46,11 @@ export declare class Utils {
     /**
      * Sorts array of nodes
      * @param nodes array to sort
-     * @param dir 1 for asc, -1 for desc (optional)
-     * @param width width of the grid. If undefined the width will be calculated automatically (optional).
+     * @param dir 1 for ascending, -1 for descending (optional)
      **/
-    static sort(nodes: GridStackNode[], dir?: -1 | 1, column?: number): GridStackNode[];
-    /**
-     * creates a style sheet with style id under given parent
-     * @param id will set the 'gs-style-id' attribute to that id
-     * @param parent to insert the stylesheet as first child,
-     * if none supplied it will be appended to the document head instead.
-     */
-    static createStylesheet(id: string, parent?: HTMLElement, options?: {
-        nonce?: string;
-    }): CSSStyleSheet;
-    /** removed the given stylesheet id */
-    static removeStylesheet(id: string): void;
-    /** inserts a CSS rule */
-    static addCSSRule(sheet: CSSStyleSheet, selector: string, rules: string): void;
+    static sort(nodes: GridStackNode[], dir?: 1 | -1): GridStackNode[];
+    /** find an item by id */
+    static find(nodes: GridStackNode[], id: string): GridStackNode | undefined;
     static toBool(v: unknown): boolean;
     static toNumber(value: null | string): number;
     static parseHeight(val: numberOrString): HeightData;
@@ -69,7 +69,6 @@ export declare class Utils {
     /** removes internal fields '_' and default values for saving */
     static removeInternalForSave(n: GridStackNode, removeEl?: boolean): void;
     /** return the closest parent (or itself) matching the given class */
-    static closestUpByClass(el: HTMLElement, name: string): HTMLElement;
     /** delay calling the given function for given delay, preventing new calls from happening while waiting */
     static throttle(func: () => void, delay: number): () => void;
     static removePositioningStyles(el: HTMLElement): void;
@@ -82,7 +81,7 @@ export declare class Utils {
     static cloneDeep<T>(obj: T): T;
     /** deep clone the given HTML node, removing teh unique id field */
     static cloneNode(el: HTMLElement): HTMLElement;
-    static appendTo(el: HTMLElement, parent: string | HTMLElement | Node): void;
+    static appendTo(el: HTMLElement, parent: string | HTMLElement): void;
     static addElStyles(el: HTMLElement, styles: {
         [prop: string]: string | string[];
     }): void;
@@ -90,6 +89,16 @@ export declare class Utils {
         type: string;
         target?: EventTarget;
     }): T;
-    /** copies the MouseEvent properties and sends it as another event to the given target */
-    static simulateMouseEvent(e: MouseEvent, simulatedType: string, target?: EventTarget): void;
+    /** copies the MouseEvent (or convert Touch) properties and sends it as another event to the given target */
+    static simulateMouseEvent(e: MouseEvent | Touch, simulatedType: string, target?: EventTarget): void;
+    /**
+     * defines an element that is used to get the offset and scale from grid transforms
+     * returns the scale and offsets from said element
+    */
+    static getValuesFromTransformedElement(parent: HTMLElement): DragTransform;
+    /** swap the given object 2 field values */
+    static swap(o: unknown, a: string, b: string): void;
+    /** returns true if event is inside the given element rectangle */
+    /** true if the item can be rotated (checking for prop, not space available) */
+    static canBeRotated(n: GridStackNode): boolean;
 }

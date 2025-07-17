@@ -1,6 +1,6 @@
 /**
- * types.ts 8.0.0
- * Copyright (c) 2021 Alain Dumesny - see GridStack root license
+ * types.ts 12.2.2
+ * Copyright (c) 2021-2024 Alain Dumesny - see GridStack root license
  */
 // default values for grid options - used during init and when saving out
 export const gridDefaults = {
@@ -18,28 +18,18 @@ export const gridDefaults = {
     marginUnit: 'px',
     maxRow: 0,
     minRow: 0,
-    oneColumnSize: 768,
     placeholderClass: 'grid-stack-placeholder',
     placeholderText: '',
-    removableOptions: { accept: '.grid-stack-item' },
+    removableOptions: { accept: 'grid-stack-item', decline: 'grid-stack-non-removable' },
     resizable: { handles: 'se' },
     rtl: 'auto',
     // **** same as not being set ****
     // disableDrag: false,
-    // disableOneColumnMode: false,
     // disableResize: false,
     // float: false,
     // handleClass: null,
-    // oneColumnModeDomSort: false,
     // removable: false,
     // staticGrid: false,
-    // styleInHead: false,
-};
-/** default dragIn options */
-export const dragInDefaultOptions = {
-    handle: '.grid-stack-item-content',
-    appendTo: 'body',
-    // revert: 'invalid',
-    // scroll: false,
+    //removable
 };
 //# sourceMappingURL=types.js.map

@@ -42,7 +42,7 @@ namespace EMS_Tool.Controllers
 
             var data = await _dashboardService.GetChartDataAsync(connectionString, chart.DataQuery);
 
-            return Ok(new
+            return new JsonResult(new
             {
                 type = chart.ChartType,
                 data = data

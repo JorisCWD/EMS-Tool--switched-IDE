@@ -253,5 +253,49 @@ namespace EMS_Tool.Services
 
             await command.ExecuteNonQueryAsync();
         }
+
+        private string? ExtractTableName(string dataQuery)
+        {
+            try
+            {
+                var lower = dataQuery.ToLower();
+                var fromIndex = lower.IndexOf("from");
+                if (fromIndex == -1) return null;
+
+                var afterFrom = dataQuery.Substring(fromIndex + 4).Trim();
+                var parts = afterFrom.Split(' ', '\n', '\r', ';');
+                return parts[0].Trim('[', ']');
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<string?> GetChartTitleFromMetaAsync(string connectionString, string dataQuery)
+        {
+            var tableName = ExtractTableName(dataQuery);
+            if (string.IsNullOrEmpty(tableName))
+                return null;
+
+            const string query = @"
+        SELECT TOP 1 [History_Omschrijving]
+        FROM [Punten_extra_info]
+        WHERE [History_tabel] = @TableName
+          AND [Eenheid] != 'Mbus koppeling'";
+
+            using var connection = new SqlConnection(connectionString);
+            await connection.OpenAsync();
+
+            using var command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@TableName", tableName);
+
+            using var reader = await command.ExecuteReaderAsync();
+            if (await reader.ReadAsync())
+                return reader["History_Omschrijving"]?.ToString();
+
+            return null;
+        }
+
     }
 }

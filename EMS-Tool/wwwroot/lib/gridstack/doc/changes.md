@@ -5,6 +5,53 @@ Change log
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
 
+- [12.2.2 (2025-07-06)](#1222-2025-07-06)
+- [12.2.1 (2025-05-28)](#1221-2025-05-28)
+- [12.2.0 (2025-05-27)](#1220-2025-05-27)
+- [12.1.2 (2024-05-07)](#1212-2024-05-07)
+- [12.1.1 (2024-04-28)](#1211-2024-04-28)
+- [12.1.0 (2024-04-23)](#1210-2024-04-23)
+- [12.0.0 (2025-04-12)](#1200-2025-04-12)
+- [11.5.1 (2025-03-23)](#1151-2025-03-23)
+- [11.5.0 (2025-03-16)](#1150-2025-03-16)
+- [11.4.0 (2025-02-27)](#1140-2025-02-27)
+- [11.3.0 (2025-01-26)](#1130-2025-01-26)
+- [11.2.0 (2024-12-29)](#1120-2024-12-29)
+- [11.1.2 (2024-12-08)](#1112-2024-12-08)
+- [11.1.1 (2024-11-26)](#1111-2024-11-26)
+- [11.1.0 (2024-11-17)](#1110-2024-11-17)
+- [11.0.1 (2024-10-21)](#1101-2024-10-21)
+- [11.0.0 (2024-10-20)](#1100-2024-10-20)
+- [10.3.1 (2024-07-21)](#1031-2024-07-21)
+- [10.3.0 (2024-06-26)](#1030-2024-06-26)
+- [10.2.1 (2024-06-23)](#1021-2024-06-23)
+- [10.2.0 (2024-06-02)](#1020-2024-06-02)
+- [10.1.2 (2024-03-30)](#1012-2024-03-30)
+- [10.1.1 (2024-03-03)](#1011-2024-03-03)
+- [10.1.0 (2024-02-04)](#1010-2024-02-04)
+- [10.0.1 (2023-12-10)](#1001-2023-12-10)
+- [10.0.0 (2023-11-20)](#1000-2023-11-20)
+- [9.5.1 (2023-11-11)](#951-2023-11-11)
+- [9.5.0 (2023-10-26)](#950-2023-10-26)
+- [9.4.0 (2023-10-15)](#940-2023-10-15)
+- [9.3.0 (2023-09-30)](#930-2023-09-30)
+- [9.2.2 (2023-09-27)](#922-2023-09-27)
+- [9.2.1 (2023-09-20)](#921-2023-09-20)
+- [9.2.0 (2023-09-10)](#920-2023-09-10)
+- [9.1.1 (2023-09-06)](#911-2023-09-06)
+- [9.1.0 (2023-09-04)](#910-2023-09-04)
+- [9.0.2 (2023-08-29)](#902-2023-08-29)
+- [9.0.1 (2023-08-27)](#901-2023-08-27)
+- [9.0.0 (2023-08-23)](#900-2023-08-23)
+- [8.4.0 (2023-07-20)](#840-2023-07-20)
+- [8.3.0 (2023-06-13)](#830-2023-06-13)
+- [8.2.3 (2023-06-11)](#823-2023-06-11)
+- [8.2.1 (2023-05-26)](#821-2023-05-26)
+- [8.2.0 (2023-05-24)](#820-2023-05-24)
+- [8.1.2 (2023-05-22)](#812-2023-05-22)
+- [8.1.1 (2023-05-13)](#811-2023-05-13)
+- [8.1.0 (2023-05-06)](#810-2023-05-06)
+- [8.0.1 (2023-04-29)](#801-2023-04-29)
 - [8.0.0 (2023-04-29)](#800-2023-04-29)
 - [7.3.0 (2023-04-01)](#730-2023-04-01)
 - [7.2.3 (2023-02-02)](#723-2023-02-02)
@@ -83,6 +130,249 @@ Change log
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
+## 12.2.2 (2025-07-06)
+* fix: [#3070](https://github.com/gridstack/gridstack.js/pull/3070) incorrect property name 'sizeToContent' when cleaning up invalid attributes
+* fix: [#3077](https://github.com/gridstack/gridstack.js/pull/3077) incorrect node._id check
+* fix: [#3054](https://github.com/gridstack/gridstack.js/pull/3054) Avoid reflows via explicitly setting minRow
+* fix: [#3085](https://github.com/gridstack/gridstack.js/issues/3085) `opts.minRow` being updated
+
+## 12.2.1 (2025-05-28)
+* fix: [#3064](https://github.com/gridstack/gridstack.js/pull/3064) fix `GridStack.updateCB(w)` crash
+
+## 12.2.0 (2025-05-27)
+* feat: [#3061](https://github.com/gridstack/gridstack.js/pull/3061) added `GridStack.updateCB(w)` that gets called after a widget has been updated (eg: load() after initial layout) instead of created
+
+## 12.1.2 (2024-05-07)
+* fix [#3043](https://github.com/gridstack/gridstack.js/issues/3043) fix `opts.animate` again
+* fix [#3048](https://github.com/gridstack/gridstack.js/pull/3048) nested grid resizeToContentCBCheck() fix
+
+## 12.1.1 (2024-04-28)
+* fix [#3038](https://github.com/gridstack/gridstack.js/pull/3038) `updateOptions()` fix opts.minRow being undefined
+
+## 12.1.0 (2024-04-23)
+* feat [#2671](https://github.com/gridstack/gridstack.js/issues/2671) subgrid now propagate events to topmost grid. Use `el.gridstackNode.grid` to know which (sub) grid.
+* fix [#3028](https://github.com/gridstack/gridstack.js/pull/3028) `updateOptions()` no longer modifies passed in struct. only field we check are being handled too.
+* fix [#3029](https://github.com/gridstack/gridstack.js/pull/3029) `resizeToContent()` fix for nested grid with content above
+* fix [#3030](https://github.com/gridstack/gridstack.js/pull/3030) `resizeToContentCheck()` wasn't blocking _ignoreLayoutsNodeChange at end of the loop
+* rem [#3022](https://github.com/gridstack/gridstack.js/pull/3022) removed ES5 support (IE doesn't support CSS vars needed now)
+* rem [#3027](https://github.com/gridstack/gridstack.js/pull/3027) remove legacy code support for disableOneColumnMode, oneColumnSize, oneColumnModeDomSort
+
+## 12.0.0 (2025-04-12)
+* feat: [#2854](https://github.com/gridstack/gridstack.js/pull/2854) Removed dynamic stylesheet and migrated to CSS vars. Thank you [lmartorella](https://github.com/lmartorella)
+* feat: [#3013](https://github.com/gridstack/gridstack.js/pull/3013) columns no longer require custom classes nor `gridstack-extra.css` as we now use CSS vars.
+* fix: [#2978](https://github.com/gridstack/gridstack.js/issues/2978) Very slow operation in 11.2.0 and higher with large blocks
+* fix: [#2947](https://github.com/gridstack/gridstack.js/issues/2947) loading responsive `layout:'list'` into smaller screen doesn't layout correctly.
+
+## 11.5.1 (2025-03-23)
+* revert: [#2981](https://github.com/gridstack/gridstack.js/issues/2981) Locked was incorrectly changed. fixed doc instead
+
+## 11.5.0 (2025-03-16)
+* feat: [#2975](https://github.com/gridstack/gridstack.js/pull/2975) `prepareDragDrop(el, force)` option to force re-creation of the drag&drop event binding
+* feat: [#2989](https://github.com/gridstack/gridstack.js/pull/2989) new `updateOptions(o: GridStackOptions)` to update PARTIAL list of options after grid as been created
+* fix: [#2980](https://github.com/gridstack/gridstack.js/issues/2980) dd-touch circular dependency
+* fix: [#2667](https://github.com/gridstack/gridstack.js/issues/2667) sidebar items not honoring gs-w (enter-leave-re-enter)
+* fix: [#2987](https://github.com/gridstack/gridstack.js/issues/2987) gs-size-to-content to support numbers
+* fix: [#2981](https://github.com/gridstack/gridstack.js/issues/2981) Locked not working as expected
+
+## 11.4.0 (2025-02-27)
+* fix: [#2921](https://github.com/gridstack/gridstack.js/pull/2921) replace initMouseEvent with MouseEvent constructor and added composed: true
+* fix: [#2939](https://github.com/gridstack/gridstack.js/issues/2939) custom drag handle not working with LazyLoad
+* fix: [#2955](https://github.com/gridstack/gridstack.js/issues/2955) angular circular dependency
+* fix: [#2951](https://github.com/gridstack/gridstack.js/issues/2951) shadow DOM dragging re-appending fix
+* fix: [#2964](https://github.com/gridstack/gridstack.js/pull/2964) minW larger than column fix
+* feat: [#2965](https://github.com/gridstack/gridstack.js/pull/2965) internal `_prepareDragDropByNode(n)` is now public as `prepareDragDrop(el)` so Angular, React, and others can call once the DOM content elements have been added (the outside grid item divs are always created before content)
+* break: [#2959](https://github.com/gridstack/gridstack.js/issues/2959) `Util.createWidgetDivs()` has moved to `GridStack.createWidgetDivs()` to remove circular dependencies
+
+## 11.3.0 (2025-01-26)
+* feat: added `isIgnoreChangeCB()` if changeCB should be ignored due to column change, sizeToContent, loading, etc...
+* feat: added `responsive_none.html` demo and fixed layout:'none' to bound check the layout (no-op unless it must change)
+
+## 11.2.0 (2024-12-29)
+* feat: [#2695](https://github.com/gridstack/gridstack.js/issues/2695) 'Esc' to cancel now works on sidebar external items, also works dragging over trash.
+* feat: [#2852](https://github.com/gridstack/gridstack.js/pull/2852) better React example. Thank you [CNine](https://github.com/Aysnine)
+* fix: [#2852](https://github.com/gridstack/gridstack.js/pull/2852) grid in tabs correctly handles CSS. Thank you [Luciano Martorella](https://github.com/lmartorella)
+* fix: [#2900](https://github.com/gridstack/gridstack.js/issues/2900) use attr `data-gs-widget` instead of `gridstacknode` (supported as well for backward compatibility)
+
+## 11.1.2 (2024-12-08)
+* fix: [#2877](https://github.com/gridstack/gridstack.js/pull/2877) angular wrapper uses standalone, while now being compatible down to ng14. thanks to [andre-steudel](https://github.com/andre-steudel)
+* fix: [#2886](https://github.com/gridstack/gridstack.js/issues/2886) added `gs-size-to-content` support
+* fix: [#2887](https://github.com/gridstack/gridstack.js/issues/2887) mobile nested grid TypeError: e.currentTarget is null
+
+## 11.1.1 (2024-11-26)
+* fix: [#2878](https://github.com/gridstack/gridstack.js/pull/2878) make sure sub-grid inherit parent opts by default, with subgrid defaults.
+* fix: [#2879](https://github.com/gridstack/gridstack.js/pull/2879) sub-grid item `sizeToContent:true` now handle content above/below sub grid.
+
+## 11.1.0 (2024-11-17)
+* feat: [#2864](https://github.com/gridstack/gridstack.js/issues/2864) added `GridStackOptions.layout` for nested grid reflow during resize. default to 'list'.
+* fix: [#2859](https://github.com/gridstack/gridstack.js/pull/2859) re-enabled tests and fix numerous issues found (see CL). Also thank you [Luciano Martorella](https://github.com/lmartorella) for getting me going and starting it.
+* fix: [#2851](https://github.com/gridstack/gridstack.js/pull/2851) added support for custom max layout saving - Thank you [Luciano Martorella](https://github.com/lmartorella)
+* fix: [#2492](https://github.com/gridstack/gridstack.js/issues/2492) loading same layout with overlapping widget fix. v10.3.0 regression.
+
+## 11.0.1 (2024-10-21)
+* fix: [#2834](https://github.com/gridstack/gridstack.js/pull/2834) v11 angular missing package.json
+* fix: [#2835](https://github.com/gridstack/gridstack.js/bug/2835) make sure we have unique USER id
+
+## 11.0.0 (2024-10-20)
+* feat: [#2826](https://github.com/gridstack/gridstack.js/pull/2826) Lazy loading of widget content until visible (`GridStackOptions.lazyLoad` and `GridStackWidget.lazyLoad`)
+* feat: [#2818](https://github.com/gridstack/gridstack.js/pull/2818) support for Angular Component hosting true sub-grids (that size according to parent) without requring them to be only child of grid-item-content.
+* fix: [#2231](https://github.com/gridstack/gridstack.js/bug/2231),[#1840](https://github.com/gridstack/gridstack.js/bug/1840),[#2354](https://github.com/gridstack/gridstack.js/bug/2354)
+big overall to how we do sidepanel drag&drop helper. see release notes.
+* fix: [#2736](https://github.com/gridstack/gridstack.js/bug/2736) safe practices around GridStackWidget.content no longer setting innerHTML
+
+## 10.3.1 (2024-07-21)
+* fix: [#2734](https://github.com/gridstack/gridstack.js/bug/2734) rotate() JS error
+* fix: [#2741](https://github.com/gridstack/gridstack.js/pull/2741) resizeToContent JS error with nested grid
+* fix: [#2740](https://github.com/gridstack/gridstack.js/bug/2740) nested grid drag fix
+* fix: [#2730](https://github.com/gridstack/gridstack.js/bug/2730) resizing left from right most item works
+* fix: [#2327](https://github.com/gridstack/gridstack.js/bug/2327) remove dataTransfer mention as not supported
+
+## 10.3.0 (2024-06-26)
+* fix: [#2720](https://github.com/gridstack/gridstack.js/pull/2720) load() now creates widgets in order (used to be reverse due to old collision code)
+
+## 10.2.1 (2024-06-23)
+* fix: [#2683](https://github.com/gridstack/gridstack.js/issues/2683) check for fixed grid maxRow during resize
+* fix: [#2694](https://github.com/gridstack/gridstack.js/issues/2694) prevent 'r' rotation to items that can't resize (locked, noResize, fixed sizes)
+* fix: [#2709](https://github.com/gridstack/gridstack.js/pull/2709) support for multiple drag targets - Thank you [nickfulcher](https://github.com/nickfulcher)
+* fix: [#2669](https://github.com/gridstack/gridstack.js/issues/2669) load() sometimes restore incorrectly
+
+## 10.2.0 (2024-06-02)
+* feat: [#2682](https://github.com/gridstack/gridstack.js/pull/2682) You can now press 'Esc' to cancel a move|resize, 'r' to rotate during a drag. added `GridStack.rotate()` as well - Thank you John B. for this feature sponsor.
+* fix: [#2672](https://github.com/gridstack/gridstack.js/pull/2672) dropping into full grid JS error
+* fix: [#2676](https://github.com/gridstack/gridstack.js/issues/2676) handle minW resizing when column count is less
+* fix: [#2677](https://github.com/gridstack/gridstack.js/issues/2677) allow button as handle dragging
+
+## 10.1.2 (2024-03-30)
+* fix: [#2628](https://github.com/gridstack/gridstack.js/issues/2628) `removeAll()` does not trigger Angular's ngOnDestroy 
+* fix: [#2503](https://github.com/gridstack/gridstack.js/issues/2503) Drag and drop a widget on top of a locked widget - Thank you [JakubEleniuk](https://github.com/JakubEleniuk)
+* fix: [#2584](https://github.com/gridstack/gridstack.js/issues/2584) wrong sort order during 1 column resize - Thank you [JakubEleniuk](https://github.com/JakubEleniuk) again.
+* fix: [#2639](https://github.com/gridstack/gridstack.js/issues/2639) load() with mix of new item without coordinates
+* fix: [#2633](https://github.com/gridstack/gridstack.js/issues/2633) Drop into full grid causes crash
+* fix: [#2559](https://github.com/gridstack/gridstack.js/issues/2559) changed angular demos (support 1 column)
+* fix: [#2453](https://github.com/gridstack/gridstack.js/issues/2453) recreated grid trash issue
+
+## 10.1.1 (2024-03-03)
+* fix: [#2620](https://github.com/gridstack/gridstack.js/pull/2620) allow resizing with sizeToContent:NUMBER is uses 
+
+## 10.1.0 (2024-02-04)
+* feat: [#2574](https://github.com/gridstack/gridstack.js/pull/2574) Allow cell height in cm and mm units
+* feat: [#2578](https://github.com/gridstack/gridstack.js/pull/2578) allow different scaling between drag toolbar and grid
+* fix: [#2577](https://github.com/gridstack/gridstack.js/issues/2577) ui-resizable-s/-n style fix
+* fix: [#2576](https://github.com/gridstack/gridstack.js/issues/2576) column('none') now ignores layouts
+* fix: [#2560](https://github.com/gridstack/gridstack.js/issues/2560) nested grid fix (enter can call leave which can call enter again) - Thank you [v1talii-dev](https://github.com/v1talii-dev)
+* fix: [#2596](https://github.com/gridstack/gridstack.js/pull/2596) prevent SSR crash
+* fix: [#2610](https://github.com/gridstack/gridstack.js/pull/2610) using passive:true for mousemove events
+* fix: [#2612](https://github.com/gridstack/gridstack.js/pull/2612) restrict vertical resize if `sizeToContent:true`
+* demo: nested.htm now has nested create and drag&drop example - Thank you [fredericrous](https://github.com/fredericrous)
+
+## 10.0.1 (2023-12-10)
+* fix: [#2552](https://github.com/gridstack/gridstack.js/issues/2552) DOM init doesn't sizeToContent
+* fix: [#2561](https://github.com/gridstack/gridstack.js/pull/2561) issues with sizeToContent animation, cleanup, etc...
+* fix: [#2427](https://github.com/gridstack/gridstack.js/issues/2427) sizeToContent supports rem/em cell height
+* fix: [#2558](https://github.com/gridstack/gridstack.js/pull/2558) remove style node in shadow root
+* fix: [#2556](https://github.com/gridstack/gridstack.js/pull/2556) make sure 'new GridStack(el)' set el.gridstack=this right away
+* cleanup: [#2550](https://github.com/gridstack/gridstack.js/pull/2550) Optimize resize arrow (~88% lighter from 1.82 KB to 225B)
+
+## 10.0.0 (2023-11-20)
+* feat [#2542](https://github.com/gridstack/gridstack.js/pull/2542) we now support much richer responsive behavior with `GridStackOptions.columnOpts` including any breakpoint width:column pairs, or automatic column sizing. 
+* `disableOneColumnMode`, `oneColumnSize`, `oneColumnModeDomSort` have been removed (see v10 migration doc)
+
+## 9.5.1 (2023-11-11)
+* fix [#2525](https://github.com/gridstack/gridstack.js/commit/2525) Fixed unhandled exception happening in _mouseMove handler
+* fix potential crash in resizeToContentCheck() if grid gets deleted by the time the delay happens
+* fix [#2527](https://github.com/gridstack/gridstack.js/issues/2527) Incorrect layout on grid load in one column mode
+* fix [#2496](https://github.com/gridstack/gridstack.js/issues/2496) animation on init, introduced in 8.1.1
+
+## 9.5.0 (2023-10-26)
+* feat [#1275](https://github.com/gridstack/gridstack.js/issues/1275) div scale support - Thank you [elmehdiamlou](https://github.com/elmehdiamlou) for implementing this teh right way (add scale to current code)
+* fix [#2489](https://github.com/gridstack/gridstack.js/commit/2489) moved the dropped event handler to after doing everything (no more setTimeout) - Thanks [arnoudb](https://github.com/arnoudb) for suggesting a fix.
+* fix [#2497](https://github.com/gridstack/gridstack.js/issues/2497) Utils.parseHeight() fix
+* fix column(1) to not restore if disableOneColumnMode on size change
+
+## 9.4.0 (2023-10-15)
+* revert [#2263](https://github.com/gridstack/gridstack.js/issues/2263) div scale support - causing too many issues for now (#2498 #2491)
+* fix [#2492](https://github.com/gridstack/gridstack.js/issues/2492) calling load() allows overlapping widgets
+
+## 9.3.0 (2023-09-30)
+* fix [#1275](https://github.com/gridstack/gridstack.js/issues/1275) div scale support - Thank you [VincentMolinie](https://github.com/VincentMolinie) for implementing this
+
+## 9.2.2 (2023-09-27)
+* fix - sub-grid styles now look for immediate correct parent, not any depth above.
+* fix [#2469](https://github.com/gridstack/gridstack.js/issues/2469) "Invalid height" error CSS minHeight
+* fix [#2394](https://github.com/gridstack/gridstack.js/issues/2394) nested grid size issue when sub-items moved up/down
+
+## 9.2.1 (2023-09-20)
+* fix _updateContainerHeight() to use height rather than min-height again (apart for nested grids which need it) and partial getComputedStyle CSS minHeight support
+
+## 9.2.0 (2023-09-10)
+* feat: nested grids now support `sizeToContent` to size themselves to how many sub items they contain - Thank you [@Helix](https://gridstackjs.slack.com/team/U05QT7G8H7T) for sponsoring this!
+* fix [#2449](https://github.com/gridstack/gridstack.js/issues/2449) full grid maxRow fix
+
+## 9.1.1 (2023-09-06)
+* fix [#2435](https://github.com/gridstack/gridstack.js/issues/2435) directionCollideCoverage() tweaks
+* fix resizeToContent() to handle node.h (using when cellHeight changes or we resize) vs DOM sizing (rest of the time)
+
+## 9.1.0 (2023-09-04)
+* renamed fitToContent to sizeToContent (API BREAK)
+* feat: `sizeToContent` now supports being `boolean|number` to limit the height but user can resize past that, unlike maxH.
+* feat: `resizeToContentParent` now on GridStackWidget for those widgets that need to resize differently.
+
+## 9.0.2 (2023-08-29)
+* fix 'resizecontent' event fix not called.
+* partial fix [#2427](https://github.com/gridstack/gridstack.js/issues/2427) sizeToContent when calling cellHeight()/addWidget()/MakeWidget()
+
+## 9.0.1 (2023-08-27)
+* fix [#2413](https://github.com/gridstack/gridstack.js/issues/2413) support touchscreen+mouse devices. Thank you [@Ruslan207](https://github.com/Ruslan207)
+* tweak to `sizeToContent` from [#2412](https://github.com/gridstack/gridstack.js/pull/2412#issuecomment-1690219018). Thank you [@JonSohn](https://github.com/JonSohn)
+
+## 9.0.0 (2023-08-23)
+- feat [#404](https://github.com/gridstack/gridstack.js/issues/404) added `GridStackOptions.sizeToContent` and `GridStackWidget.sizeToContent` to make gridItems size themselves to their content (no scroll bar), calling `GridStack.resizeToContent(el)` whenever the grid or item is resized.
+- also added new `'resizecontent'` event, and `resizeToContentCB` and `resizeToContentParent` vars.
+- fix [#2406](https://github.com/gridstack/gridstack.js/issues/2406) inf loop when autoPosition after loading into 1 column, then 2.
+
+## 8.4.0 (2023-07-20)
+* feat [#2378](https://github.com/gridstack/gridstack.js/pull/2378) attribute `DDRemoveOpt.decline` to deny the removal of a specific class.
+* fix: dragging onto trash now calls removeWidget() and therefore `GridStack.addRemoveCB` (for component cleanup)
+* feat: `load()` support re-order loading without explicit coordinates (`autoPosition` or missing `x,y`) uses passed order.
+
+## 8.3.0 (2023-06-13)
+* feat [#2358](https://github.com/gridstack/gridstack.js/issues/2358) column(N, 'list'|'compact'|...) resizing now support reflowing content as list
+
+## 8.2.3 (2023-06-11)
+* fix [#2349](https://github.com/gridstack/gridstack.js/issues/2349) grid NoMove vs item NoMove support
+* fix [#2352](https://github.com/gridstack/gridstack.js/issues/2352) .ui-draggable-dragging z-index for modal dialogs
+* fix [#2357](https://github.com/gridstack/gridstack.js/issues/2357) NaN inf loop when using cellHeight rem/em
+* fix [#2354](https://github.com/gridstack/gridstack.js/issues/2354) max-w cloning issue fix
+
+## 8.2.1 (2023-05-26)
+* fix: make sure `removeNode()` uses internal _id (unique) and not node itself (since we clone those often)
+* fix: after calling `addRemoveCB` make sure we don't makeWidget() (incorrectly) a second time
+* break: `GridStackWidget.id` is now string only (used to be numberOrString) as it causes usage to have to check and cast
+
+## 8.2.0 (2023-05-24)
+* feat: `makeWidget()` now take optional `GridStackWidget` for sizing
+* fix: make sure `GridStack.saveCB` is call in `removeWidget()`
+* feat: angular wrapper: serialize custom data support, and making sure destroy() is called on ng components
+
+## 8.1.2 (2023-05-22)
+* [#2323](https://github.com/gridstack/gridstack.js/issues/2323) module for Angular wrapper 
+
+## 8.1.1 (2023-05-13)
+* fix: [#2314](https://github.com/gridstack/gridstack.js/issues/2314) fix issue with having min-height/width instead of height/width for gs-h|x="1"
+also further compressed CSS multi column rules (use `.gs-# > .grid-stack-item` instead of `.grid-stack-# > .grid-stack-item`)
+
+## 8.1.0 (2023-05-06)
+* break: remove `GridStackOptions.minWidth` obsolete since 5.1, use `oneColumnSize` instead
+* optimize: CSS files now even 25% smaller (after being halfed in 8.0.0) by removing `.grid-stack` prefix for anything already gs based, and 3 digit rounding.
+* fix: [#2275](https://github.com/gridstack/gridstack.js/issues/2275) `setupDragIn()` signature tweaks (HTMLElement | Document)
+* feat: [#2205](https://github.com/gridstack/gridstack.js/issues/2205) added `GridStackOptions.draggable.cancel` for list of selectors that should prevent item dragging
+
+## 8.0.1 (2023-04-29)
+* feat: [#2275](https://github.com/gridstack/gridstack.js/issues/2275) `setupDragIn()` now can take an array or elements (in addition to selector string) and optional parent root (for shadow DOM support)
+* fix: [#2234](https://github.com/gridstack/gridstack.js/issues/2234) `Utils.getElements('1')` (called by removeWidget() and others) now checks for digit 'selector' (becomes an id).
+* fix: [#2213](https://github.com/gridstack/gridstack.js/issues/2213) `destroy()` now removes event handlers too
+* feat: [#2292](https://github.com/gridstack/gridstack.js/issues/2292) ne nw resize handle
+* break: (meant to be in v8) removed `GridStackOptions.dragInOptions` since `GridStack.setupDragIn()`has it replaced since 4.0
+
 ## 8.0.0 (2023-04-29)
 * package is now ES2020 (TS exported files), webpack all.js still umd (better than commonjs for browsers), still have es5/ files unchanged (for now)
 * optimize [#2243](https://github.com/gridstack/gridstack.js/issues/2243) removed `gs-min|max_w|h` attribute generated in CSS or written out as they are never used for rendering, only for initial load. This reduce our column/row CSS in half!
@@ -123,7 +413,7 @@ Change log
 * fix [#939](https://github.com/gridstack/gridstack.js/issues/2039) 'prototype' undefined error for dd-gridstack.js
 * add [#939](https://github.com/gridstack/gridstack.js/issues/2105) disable/enable are methods now recursive by default
 * add better `GridStackEventHandlerCallback` spelled out types
-* add We now have support for [Angular Component wrappers](https://github.com/gridstack/gridstack.js/tree/master/demo/angular/src/app) out of the box included in the build, with docs and demo! Need help to do that for React and Vue.
+* add We now have support for [Angular Component wrappers](https://github.com/gridstack/gridstack.js/tree/master/angular/) out of the box included in the build, with docs and demo! Need help to do that for React and Vue.
 
 ## 7.1.1 (2022-11-13)
 * fix [#939](https://github.com/gridstack/gridstack.js/issues/939) editable elements focus (regression in v6). Thank you [@Gezdy](https://github.com/Gezdy)

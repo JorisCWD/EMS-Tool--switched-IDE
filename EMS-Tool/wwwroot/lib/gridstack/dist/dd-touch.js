@@ -1,8 +1,9 @@
 /**
- * touch.ts 8.0.0
- * Copyright (c) 2021 Alain Dumesny - see GridStack root license
+ * touch.ts 12.2.2
+ * Copyright (c) 2021-2024 Alain Dumesny - see GridStack root license
  */
 import { DDManager } from './dd-manager';
+import { Utils } from './utils';
 /**
  * Detect touch support - Windows Surface devices and other touch devices
  * should we use this instead ? (what we had for always showing resize handles)
@@ -41,26 +42,8 @@ function simulateMouseEvent(e, simulatedType) {
     // Prevent "Ignored attempt to cancel a touchmove event with cancelable=false" errors
     if (e.cancelable)
         e.preventDefault();
-    const touch = e.changedTouches[0], simulatedEvent = document.createEvent('MouseEvents');
-    // Initialize the simulated mouse event using the touch event's coordinates
-    simulatedEvent.initMouseEvent(simulatedType, // type
-    true, // bubbles
-    true, // cancelable
-    window, // view
-    1, // detail
-    touch.screenX, // screenX
-    touch.screenY, // screenY
-    touch.clientX, // clientX
-    touch.clientY, // clientY
-    false, // ctrlKey
-    false, // altKey
-    false, // shiftKey
-    false, // metaKey
-    0, // button
-    null // relatedTarget
-    );
     // Dispatch the simulated event to the target element
-    e.target.dispatchEvent(simulatedEvent);
+    Utils.simulateMouseEvent(e.changedTouches[0], simulatedType);
 }
 /**
  * Simulate a mouse event based on a corresponding Pointer event
@@ -71,26 +54,8 @@ function simulatePointerMouseEvent(e, simulatedType) {
     // Prevent "Ignored attempt to cancel a touchmove event with cancelable=false" errors
     if (e.cancelable)
         e.preventDefault();
-    const simulatedEvent = document.createEvent('MouseEvents');
-    // Initialize the simulated mouse event using the touch event's coordinates
-    simulatedEvent.initMouseEvent(simulatedType, // type
-    true, // bubbles
-    true, // cancelable
-    window, // view
-    1, // detail
-    e.screenX, // screenX
-    e.screenY, // screenY
-    e.clientX, // clientX
-    e.clientY, // clientY
-    false, // ctrlKey
-    false, // altKey
-    false, // shiftKey
-    false, // metaKey
-    0, // button
-    null // relatedTarget
-    );
     // Dispatch the simulated event to the target element
-    e.target.dispatchEvent(simulatedEvent);
+    Utils.simulateMouseEvent(e, simulatedType);
 }
 /**
  * Handle the touchstart events
@@ -147,6 +112,8 @@ export function touchend(e) {
  */
 export function pointerdown(e) {
     // console.log("pointer down")
+    if (e.pointerType === 'mouse')
+        return;
     e.target.releasePointerCapture(e.pointerId); // <- Important!
 }
 export function pointerenter(e) {
@@ -156,6 +123,8 @@ export function pointerenter(e) {
         return;
     }
     // console.log('pointerenter');
+    if (e.pointerType === 'mouse')
+        return;
     simulatePointerMouseEvent(e, 'mouseenter');
 }
 export function pointerleave(e) {
@@ -165,6 +134,8 @@ export function pointerleave(e) {
         // console.log('pointerleave ignored');
         return;
     }
+    if (e.pointerType === 'mouse')
+        return;
     DDTouch.pointerLeaveTimeout = window.setTimeout(() => {
         delete DDTouch.pointerLeaveTimeout;
         // console.log('pointerleave delayed');

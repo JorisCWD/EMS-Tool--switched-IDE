@@ -320,7 +320,7 @@ namespace EMS_Tool.Controllers
 
             try
             {
-                var sql = $"SELECT TOP 50 [{xColumn}], [{yColumn}] FROM [{tableName}]";
+                var sql = $"SELECT [{xColumn}], [{yColumn}] FROM [{tableName}]";
 
                 var data = await _dashboardService.GetChartDataAsync(connectionString, sql);
                 return Json(data);

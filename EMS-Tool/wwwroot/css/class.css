@@ -110,3 +110,13 @@
         height: auto;
         display: block;
     }
+
+.chart-box {
+    position: absolute;
+    box-shadow: 0 0 4px rgba(0,0,0,0.15);
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: #fff;
+    touch-action: none;
+}
+
