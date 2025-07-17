@@ -12,4 +12,4 @@ As of 2025-04-28, this project contains the following features:
 
 
 #Last part
-As the developer of this project, I want to extend my graditute to Croonwoler&dros for giving me the oppurtinity to work on this project as my graduation internship.
+As the developer of this project, I want to extend my graditute to Croonwoler&dros for giving me the oppurtinity to work on this project as my graduation internship. - Joris van Galen
