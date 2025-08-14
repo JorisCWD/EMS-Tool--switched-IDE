@@ -1,18 +1,22 @@
 {
     "version": "3.0",
     "defaultProvider": "jsdelivr",
-    "libraries": [
-        {
-            "library": "chart.js@4.4.9",
-            "destination": "wwwroot/lib/chart.js/"
-        },
-        {
-            "library": "gridstack@12.2.2",
-            "destination": "wwwroot/lib/gridstack/"
-        },
-        {
-            "library": "chartjs-plugin-zoom@2.0.1",
-            "destination": "wwwroot/lib/chartjs-plugin-zoom/"
-        }
-    ]
+  "libraries": [
+    {
+      "library": "hammerjs@2.0.8",
+      "destination": "wwwroot/lib/hammer.js/"
+    },
+    {
+      "library": "chart.js@4.4.9",
+      "destination": "wwwroot/lib/chart.js/"
+    },
+    {
+      "library": "gridstack@12.2.2",
+      "destination": "wwwroot/lib/gridstack/"
+    },
+    {
+      "library": "chartjs-plugin-zoom@2.0.1",
+      "destination": "wwwroot/lib/chartjs-plugin-zoom/"
+    }
+  ]
 }

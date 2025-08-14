@@ -11,20 +11,20 @@
                     <!-- Table dropdown -->
                     <select id="tableSelect" class="form-control mb-2">
                         <option value="">Select Table</option>
-                        @foreach (var table in (List<string>)ViewBag.Tables)
+                        @foreach (var table in (Dictionary<string, string>)ViewBag.Tables)
                         {
-                            <option value="@table">@table</option>
+                            <option value="@table.Key">@table.Value</option>
                         }
                     </select>
 
-                    <!-- Column dropdowns for x/y axis -->
+                    <!-- Column dropdowns for x/y axis-->
                     <select id="xColumnSelect" name="XColumn" class="form-control mb-2">
                         <option value="">Select X Column</option>
                     </select>
                     <select id="yColumnSelect" name="YColumn" class="form-control mb-2">
                         <option value="">Select Y Column</option>
                     </select>
-
+                     
                     <select name="ChartType" class="form-control">
                         <option value="Bar">Bar</option>
                         <option value="Line">Line</option>

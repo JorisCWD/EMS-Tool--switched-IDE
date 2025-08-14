@@ -1,7 +1,11 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
     if (window.Chart && window['chartjs-plugin-zoom']) {
-        Chart.register(window['chartjs-plugin-zoom']);
+        const zoomPlugin = window['chartjs-plugin-zoom'].default || window['chartjs-plugin-zoom'].zoom;
+        if (zoomPlugin) {
+            Chart.register(zoomPlugin);
+        }
     }
+
     // --- GRIDSTACK INIT (v12) ---
     const grid = GridStack.init({
         float: true,          // allows free movement
@@ -31,27 +35,30 @@
         });
     });
 
-    document.querySelectorAll('.toggle-lock-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            const chartId = button.dataset.id;
-            const itemEl = document.querySelector(`.grid-stack-item[data-id="${chartId}"]`);
-            if (!itemEl || !itemEl.gridstackNode) return;
+    document.addEventListener("click", function (e) {
+        const btn = e.target.closest(".toggle-lock-btn");
+        if (!btn) return;
 
-            const node = itemEl.gridstackNode;
-            const isLocked = node.disableDrag && node.disableResize;
+        const chartId = btn.dataset.id;
+        const el = document.querySelector(`[data-id='${chartId}']`);
+        const grid = GridStack.getGridElement(document.querySelector(".grid-stack")).gridstack;
 
-            // Toggle drag/resize
-            grid.update(itemEl, {
-                disableDrag: !isLocked,
-                disableResize: !isLocked
-            }, true); // <-- this "true" is important (withContent=true)
+        const isLocked = el.classList.contains("locked");
 
-            // Update button icon/text
-            button.innerHTML = !isLocked
-                ? '<i class="bi bi-unlock"></i> Unlock Widget'
-                : '<i class="bi bi-lock"></i> Lock Widget';
+        grid.update(el, {
+            noMove: !isLocked,
+            noResize: !isLocked
         });
+
+        el.classList.toggle("locked");
+        btn.innerHTML = isLocked
+            ? '<i class="bi bi-unlock"></i> Lock Widget'
+            : '<i class="bi bi-lock"></i> Unlock Widget';
     });
+
+
+
+
 
 
     // --- Render charts with real data ---
@@ -125,14 +132,25 @@
                                 }
                             },
                             zoom: {
-                                wheel: { enabled: true },
-                                pan: { enabled: true, mode: 'x' },
-                                drag: {
+                                pan: {
                                     enabled: true,
-                                    backgroundColor: 'rgba(0,0,0,0.1)',
-                                    modifierKey: 'ctrl'
+                                    mode: 'x',
                                 },
-                                mode: 'x'
+                                zoom: {
+                                    wheel: {
+                                        enabled: true,
+                                        modifierKey: 'ctrl'
+                                    },
+                                    pinch: {
+                                        enabled: true
+                                    },
+                                    drag: {
+                                        enabled: true,
+                                        backgroundColor: 'rgba(0,0,0,0.1)',
+                                        modifierKey: 'ctrl'
+                                    },
+                                    mode: 'x' // belongs inside zoom, not directly under plugins.zoom
+                                }
                             }
                         },
                         scales: {
@@ -144,10 +162,14 @@
                             },
                             x: {
                                 ticks: {
-                                    maxRotation: 45,
-                                    minRotation: 30,
-                                    autoSkip: true,
-                                    maxTicksLimit: 10
+                                    type: 'time',
+                                    time: {
+                                        unit: 'day'
+                                    },
+                                    //maxRotation: 45,
+                                    //minRotation: 30,
+                                    //autoSkip: true,
+                                    //maxTicksLimit: 10
                                 }
                             }
                         }
@@ -277,7 +299,7 @@
         const yCol = yColumnSelect.value;
 
         if (table && xCol && yCol) {
-            const query = `SELECT [${xCol}], [${yCol}] FROM [${table}]`;
+            const query = `SELECT [${xCol}], [${yCol}] FROM [${table}] ORDER BY CONVERT(DATETIME, [${xCol}])`;
             dataQueryInput.value = query;
         }
     });
@@ -336,5 +358,15 @@
             }
         });
     });
+    document.querySelectorAll('.reset-zoom-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const chartId = button.dataset.id;
+            const chartInstance = Chart.getChart(`chart-${chartId}`);
+            if (chartInstance) {
+                chartInstance.resetZoom();
+            }
+        });
+    });
+
 
 });

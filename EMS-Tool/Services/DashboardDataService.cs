@@ -14,20 +14,53 @@ namespace EMS_Tool.Services
             _configuration = configuration;
         }
 
-        public async Task<List<string>> GetTablesAsync(string connectionString)
+        public async Task<Dictionary<string, string>> GetTablesAsync(string connectionString)
         {
-            var tables = new List<string>();
+            var tableMap = new Dictionary<string, string>();
+
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
 
-            var command = new SqlCommand("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'", connection);
+            var query = @"
+                SELECT History_tabel, History_Omschrijving 
+                FROM Punten_extra_info 
+                WHERE Eenheid != 'Mbus koppeling'";
+
+            Console.WriteLine("Executing SQL:");
+            Console.WriteLine(query);
+
+            using var command = new SqlCommand(query, connection);
             using var reader = await command.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
+
+            // Check if any rows exist
+            if (!reader.HasRows)
             {
-                tables.Add(reader.GetString(0));
+                reader.Close(); // MUST close before executing a second reader on same connection
+
+                var fallbackQuery = @"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'";
+                using var fallbackCommand = new SqlCommand(fallbackQuery, connection);
+                using var fallbackReader = await fallbackCommand.ExecuteReaderAsync();
+
+                while (await fallbackReader.ReadAsync())
+                {
+                    string name = fallbackReader.GetString(0);
+                    tableMap[name] = name; // fallback: actual name as display name
+                }
             }
-            return tables;
+            else
+            {
+                while (await reader.ReadAsync())
+                {
+                    string actualName = reader.GetString(0);
+                    string displayName = reader.IsDBNull(1) ? actualName : reader.GetString(1);
+                    tableMap[actualName] = displayName;
+                }
+            }
+
+            return tableMap;
         }
+
+
 
         public async Task<List<string>> GetColumnsAsync(string connectionString, string tableName)
         {

@@ -12,9 +12,9 @@
 
                     <select id="editTableSelect" class="form-control mb-2">
                         <option value="">Select Table</option>
-                        @foreach (var table in (List<string>)ViewBag.Tables)
+                        @foreach (var table in (Dictionary<string, string>)ViewBag.Tables)
                         {
-                            <option value="@table">@table</option>
+                            <option value="@table.Key">@table.Value</option>
                         }
                     </select>
 

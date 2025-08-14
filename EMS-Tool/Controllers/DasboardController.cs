@@ -178,8 +178,8 @@ namespace EMS_Tool.Controllers
 
             chart.PositionX = chart.PositionX == 0 ? 0 : chart.PositionX;
             chart.PositionY = chart.PositionY == 0 ? 0 : chart.PositionY;
-            chart.Width = chart.Width == 0 ? 400 : chart.Width;
-            chart.Height = chart.Height == 0 ? 300 : chart.Height;
+            chart.Width = chart.Width == 0 ? 2400 : chart.Width;
+            chart.Height = chart.Height == 0 ? 1800 : chart.Height;
 
             await _dashboardService.AddChartAsync(connectionString, chart);
 

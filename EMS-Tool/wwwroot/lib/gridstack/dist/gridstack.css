@@ -40,20 +40,12 @@
   overflow-y: hidden;
 }
 
-    .grid-stack > .grid-stack-item > .grid-stack-item-content,
-    .grid-stack > .grid-stack-placeholder > .placeholder-content {
-        top: var(--gs-item-margin-top);
-        right: var(--gs-item-margin-right);
-        bottom: var(--gs-item-margin-bottom);
-        left: var(--gs-item-margin-left);
-        height: 100%; /* full height of grid item */
-        display: flex; /* enable flexbox */
-        flex-direction: column;
-    }
-.grid-stack-item-content canvas {
-    flex-grow: 1; /* fill all available vertical space */
-    width: 100% !important;
-    height: 100% !important;
+.grid-stack > .grid-stack-item > .grid-stack-item-content,
+.grid-stack > .grid-stack-placeholder > .placeholder-content {
+  top: var(--gs-item-margin-top);
+  right: var(--gs-item-margin-right);
+  bottom: var(--gs-item-margin-bottom);
+  left: var(--gs-item-margin-left);
 }
 
 .grid-stack-item > .ui-resizable-handle {
